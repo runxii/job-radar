@@ -21,10 +21,10 @@ _SYSTEM_PROMPT = (
 )
 
 _USER_TEMPLATE = """
-1. Detect mandatory spoken/written language requirements.
-1.1 Detect mandatory degree requirements (not preferred)
-Hard disqualifiers (evaluate first):
-- If JD or job title requires any spoken/written language other than English or Chinese as mandatory OR if degrees other than computer science related then immediately output overall_fit = 0.00 and hard_disqualify = true
+1. Hard disqualifiers (evaluate first, immediately output overall_fit = 0.00 and hard_disqualify = true if ANY applies):
+- Job title or JD requires a spoken/written language other than English or Chinese as mandatory
+- Degree requirement is mandatory AND not computer science related
+- EU/EEA citizenship or work permit sponsorship is explicitly stated as NOT available (i.e. candidate must already hold right to work)
 
 If no hard disqualifier:
 2. Extract core technical stack.
@@ -35,6 +35,12 @@ If no hard disqualifier:
    - responsibility_match (0-1)
    - engineering_signal_match (0-1)
    - overall_fit = average of the three
+
+   Scoring calibration:
+   - 0.7 and above: strong fit, candidate meets most requirements
+   - 0.4 to 0.69: partial fit, candidate meets some but has clear gaps
+   - below 0.4: poor fit, fundamental mismatch in role type or required experience
+   - 0.0: hard disqualified (see above)
 6. Be strict for senior roles.
 
 Return single-line JSON only — no markdown, no explanation:

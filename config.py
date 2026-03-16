@@ -8,7 +8,7 @@ SEARCH_QUERIES = [
     "Technical+Support+Engineer",
 ]
 SEARCH_LOCATION = "Ireland"
-RESULTS_WANTED = 50        # per keyword; set up to 200 when running for real
+RESULTS_WANTED = 200        # per keyword; set up to 200 when running for real
 HOURS_OLD = 24             # only jobs posted in last 24h
 
 # --- Experience Filter ---
@@ -24,7 +24,7 @@ MID_MATCH_THRESHOLD  = 0.40   # → Human Apply  (below this → Drop)
 
 # --- CV ---
 CV_PATH = "cv.txt"
-
+123
 # --- Output ---
 OUTPUT_EXCEL = "output/jobs.xlsx"
 SHEET_RAW       = "raw"
