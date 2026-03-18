@@ -12,26 +12,24 @@ import config
  
 # Column definitions per sheet
 RAW_COLS = [
-    "id", "title", "company", "posted_at", "apply_url",
-    "applicants", "post_url", "description", "location",
+    "id", "title", "company", "post_url", "description", "location",
 ]
 MATCHED_COLS = [
-    "id", "title", "company", "posted_at", "apply_url", "applicants",
-    "post_url", "description", "location",
-    "explicit_years_required", "is_explicit_exp_requirement", "exp_evidence",
-    "match_score", "skills_required", "status",
+    "id", "title", "company","post_url", "description", "location",
+    "explicit_years_required",
+    "match_score", "status",
 ]
 UNMATCHED_COLS = [
-    "id", "title", "company", "posted_at", "location",
+    "id", "title", "company", "location",
     "explicit_years_required", "exp_evidence",
-    "is_explicit_exp_requirement", "applicants", "apply_url", "post_url", "description",
+    "is_explicit_exp_requirement",  "post_url", "description",
 ]
  
 _HEADER_FILL   = PatternFill("solid", start_color="2F5496", end_color="2F5496")
 _HEADER_FONT   = Font(name="Arial", bold=True, color="FFFFFF", size=10)
 _CELL_FONT     = Font(name="Arial", size=10)
 _FROZEN_ROW    = "A2"
-_COL_WIDTHS    = {"description": 60, "exp_evidence": 40, "skills_required": 40}
+_COL_WIDTHS    = {"description": 60, "exp_evidence": 40}
 _DEFAULT_WIDTH = 20
  
  

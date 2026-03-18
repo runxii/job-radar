@@ -25,9 +25,6 @@ def clean_job(raw: dict) -> dict:
         "id":          job_id,
         "title":       _str(raw.get("title")),
         "company":     _str(raw.get("company")),
-        "posted_at":   _str(raw.get("date_posted")),
-        "apply_url":   _str(raw.get("job_url_direct")),
-        "applicants":  "N/A",          # JobSpy does not provide applicant count
         "post_url":    post_url,
         "description": _str(raw.get("description"), fallback=""),
         "location":    _str(raw.get("location")),

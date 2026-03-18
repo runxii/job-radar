@@ -21,11 +21,9 @@ class TestCleanJob:
         assert result["id"] == "123"
         assert result["title"] == "Software Engineer"
         assert result["company"] == "ACME"
-        assert result["apply_url"] == "https://apply.example.com"
         assert result["post_url"] == "https://linkedin.com/jobs/view/123"
         assert result["description"] == "Great job"
         assert result["location"] == "Dublin, Ireland"
-        assert result["applicants"] == "N/A"
 
     def test_none_fields_become_na(self):
         raw = {"id": "1", "title": None, "company": None, "date_posted": None,
@@ -41,7 +39,6 @@ class TestCleanJob:
         result = clean_job(raw)
         assert result["title"] == "N/A"
         assert result["company"] == "N/A"
-        assert result["apply_url"] == "N/A"
 
     def test_post_url_constructed_from_id_when_missing(self):
         raw = {"id": "99999", "title": "Dev", "company": "X",

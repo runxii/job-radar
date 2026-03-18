@@ -16,7 +16,7 @@ except ImportError:
 
 
 _SYSTEM_PROMPT = (
-    "Act as a senior engineer. "
+    "You are a senior HR in Ireland."
     "Rate how well the candidate fits this job based on full experience."
 )
 
@@ -41,7 +41,7 @@ If no hard disqualifier:
    - 0.4 to 0.69: partial fit, candidate meets some but has clear gaps
    - below 0.4: poor fit, fundamental mismatch in role type or required experience
    - 0.0: hard disqualified (see above)
-6. Be strict for senior roles.
+6. Be strict for non-technical roles.
 
 Return single-line JSON only — no markdown, no explanation:
 
