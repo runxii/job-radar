@@ -9,7 +9,7 @@ SEARCH_QUERIES = [
 ]
 SEARCH_LOCATION = "Ireland"
 RESULTS_WANTED = 10        # per keyword; set up to 200 when running for real
-HOURS_OLD = 72      # only jobs posted in last 24h
+HOURS_OLD = 48      # only jobs posted in last 24h
 
 # --- Experience Filter ---
 MAX_YEARS_EXPERIENCE = 3   # drop jobs requiring more than this
@@ -30,3 +30,4 @@ OUTPUT_EXCEL = "output/jobs.xlsx"
 SHEET_RAW       = "raw"
 SHEET_MATCHED   = "matched"
 SHEET_UNMATCHED = "unmatched"
+

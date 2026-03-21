@@ -1,6 +1,9 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 .pytest_cache/
+.venv/
+venv/
+
 log/
 cv.txt
 output/

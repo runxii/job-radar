@@ -21,30 +21,40 @@ _SYSTEM_PROMPT = (
 )
 
 _USER_TEMPLATE = """
-1. Hard disqualifiers (evaluate first, immediately output overall_fit = 0.00 and hard_disqualify = true if ANY applies):
-- Job title or JD requires a spoken/written language other than English or Chinese as mandatory
-- Degree requirement is mandatory AND not computer science related
-- EU/EEA citizenship or work permit sponsorship is explicitly stated as NOT available (i.e. candidate must already hold right to work)
+Eval job vs candidate.
 
-If no hard disqualifier:
-2. Extract core technical stack.
-3. Extract main responsibilities.
-4. Compare against candidate experience.
-5. Score:
-   - stack_match (0-1)
-   - responsibility_match (0-1)
-   - engineering_signal_match (0-1)
-   - overall_fit = average of the three
+Classify role:
+- tech
+- tech_adj
+- product
+- customer_ops
 
-   Scoring calibration:
-   - 0.7 and above: strong fit, candidate meets most requirements
-   - 0.4 to 0.69: partial fit, candidate meets some but has clear gaps
-   - below 0.4: poor fit, fundamental mismatch in role type or required experience
-   - 0.0: hard disqualified (see above)
-6. Be strict for non-technical roles.
+Reject if JD explicitly requires:
+- non EN/Chinese
+- non-CS degree
+- EU/EEA citizen, Stamp 4
 
-Return single-line JSON only — no markdown, no explanation:
 
+If reject:
+{{"id":"{job_id}","rf":"x","tm":0.00,"rm":0.00,"dm":0.00,"fit":0.00,"hd":1}}
+
+Compare with candidate facts only.
+
+Scoring:
+tech: fit=avg(tm,rm,es)
+product: fit=avg(dm,rm,cm)
+customer_ops: fit=avg(ce,rm,op)
+tech_adj: fit=avg(tm,rm,cm)
+
+Caps if no direct evidence:
+- customer_ops max 0.35
+- product max 0.55
+- tech_adj max 0.65
+
+Use exact evidence, not general professionalism.
+Do not treat teamwork/docs/delivery alone as customer or product evidence.
+Only use given data.
+JSON only:
 {{"id": "{job_id}", "stack_match": 0.00, "res_match": 0.00, "engi_match": 0.00, "overall_fit": 0.00}}
 
 Candidate Experience:

@@ -27,7 +27,7 @@ UNMATCHED_COLS = [
  
 _HEADER_FILL   = PatternFill("solid", start_color="2F5496", end_color="2F5496")
 _HEADER_FONT   = Font(name="Arial", bold=True, color="FFFFFF", size=10)
-_CELL_FONT     = Font(name="Arial", size=10)
+_CELL_FONT     = Font(name="Arial", size=11)
 _FROZEN_ROW    = "A2"
 _COL_WIDTHS    = {"description": 60, "exp_evidence": 40}
 _DEFAULT_WIDTH = 20
@@ -94,7 +94,7 @@ def _upsert_rows(ws, records: list[dict], cols: list[str]) -> None:
         for col_idx, col_name in enumerate(cols, 1):
             cell = ws.cell(row=row_num, column=col_idx, value=record.get(col_name, ""))
             cell.font = _CELL_FONT
-            cell.alignment = Alignment(wrap_text=(col_name == "description"))
+            cell.alignment = Alignment(wrap_text=False)
  
  
 # --------------------------------------------------------------------------- #
