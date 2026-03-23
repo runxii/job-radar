@@ -60,7 +60,7 @@ def run():
     # Summary
     statuses = [j.get("status", "?") for j in scored_jobs]
     print("\n[main] -- Summary --")
-    for label in ("high_matched", "mid_matched", "Drop"):
+    for label in ("high_matcheded", "mid_matched", "Drop"):
         print(f"  {label}: {statuses.count(label)}")
     print(f"  Total scored: {len(scored_jobs)}")
  

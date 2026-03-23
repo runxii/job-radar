@@ -67,8 +67,8 @@ Job Description:
 
 
 def _label(score: float) -> str:
-    if score >= config.HIGH_MATCH_THRESHOLD:
-        return "high_matched"
+    if score >= config.high_matched_THRESHOLD:
+        return "high_matcheded"
     if score >= config.MID_MATCH_THRESHOLD:
         return "mid_matched"
     return "Drop"
@@ -134,7 +134,7 @@ def score_jobs(
         except Exception as exc:
             print(f"[scorer] WARNING: job {job.get('id')} failed - {exc}")
             result = dict(job)
-            result.update({"match_score": 0.0, "skills_required": "{}", "status": "Drop"})
+            result.update({"match_score": 0.0, "status": "Drop"})
             results.append(result)
         time.sleep(delay_seconds)
 

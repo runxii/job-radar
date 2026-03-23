@@ -114,7 +114,7 @@ All tunable parameters live in `config.py`:
 | Parameter | Default | Description |
 |---|---|---|
 | `OPENAI_MODEL` | `"gpt-5-mini"` | Model used for scoring. Swap to `gpt-5` for higher accuracy. |
-| `HIGH_MATCH_THRESHOLD` | `0.65` | Score at or above this → `high_matched` |
+| `high_matched_THRESHOLD` | `0.65` | Score at or above this → `high_matcheded` |
 | `MID_MATCH_THRESHOLD` | `0.40` | Score at or above this → `mid_matched`. Below → `Drop` |
 
 ### Output
@@ -140,7 +140,7 @@ Each job is scored across three axes, then averaged into `overall_fit`:
 
 | Score | Label | Meaning |
 |---|---|---|
-| ≥ 0.65 | **high_matched** | Strong fit — meets most requirements |
+| ≥ 0.65 | **high_matcheded** | Strong fit — meets most requirements |
 | 0.40 – 0.64 | **mid_matched** | Partial fit — worth reviewing manually |
 | < 0.40 | **Drop** | Poor fit — fundamental mismatch |
 | 0.00 | **Hard disqualified** | Triggered a hard disqualifier (see below) |

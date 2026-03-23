@@ -32,7 +32,7 @@ def migrate():
     for _, row in matched.iterrows():
         status = str(row.get("status", ""))
         # Remap old labels to new ones
-        status_map = {"AI Apply": "high_matched", "Human Apply": "mid_matched"}
+        status_map = {"high_matched": "high_matched", "mid_matched": "mid_matched"}
         status = status_map.get(status, status)
         matched_records.append({
             "id":          str(row["id"]),
