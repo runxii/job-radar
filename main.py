@@ -26,7 +26,7 @@ def run():
  
     # Stage 2 - Clean & deduplicate
     cleaned, deduped = clean_jobs(raw_jobs)
-    upsert_jobs(cleaned)   # persist all raw records immediately
+    upsert_jobs(deduped)   # persist all raw records immediately
  
     # Skip jobs already processed in a previous run
     known_ids = fetch_known_ids()
@@ -60,7 +60,7 @@ def run():
     # Summary
     statuses = [j.get("status", "?") for j in scored_jobs]
     print("\n[main] -- Summary --")
-    for label in ("high_matcheded", "mid_matched", "Drop"):
+    for label in ("high_matched", "mid_matched", "Drop"):
         print(f"  {label}: {statuses.count(label)}")
     print(f"  Total scored: {len(scored_jobs)}")
  

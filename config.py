@@ -8,7 +8,7 @@ SEARCH_QUERIES = [
     "Test+Engineer",
 ]
 SEARCH_LOCATION = "Ireland"
-RESULTS_WANTED = 20        # per keyword; set up to 200 when running for real
+RESULTS_WANTED = 5        # per keyword; set up to 200 when running for real
 HOURS_OLD = 72      # only jobs posted in last 24h
 
 # --- Experience Filter ---
@@ -19,7 +19,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = "gpt-5-mini"
 
 # Score thresholds
-high_matched_THRESHOLD = 0.7   # → high_matcheded
+high_matched_THRESHOLD = 0.7   # → high_matched
 MID_MATCH_THRESHOLD  = 0.40   # → mid_matched  (below this → Drop)
 
 # --- CV ---

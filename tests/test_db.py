@@ -33,7 +33,7 @@ import db
 
 TEST_IDS = ["test-001", "test-002", "test-003"]
 
-def _sample_job(job_id: str, score: float = 0.75, status: str = "high_matcheded") -> dict:
+def _sample_job(job_id: str, score: float = 0.75, status: str = "high_matched") -> dict:
     return {
         "id":          job_id,
         "title":       "Test Software Engineer",
@@ -106,8 +106,8 @@ class TestFetchKnownIds:
 class TestFetchNextJob:
     def test_returns_highest_score_first(self):
         db.upsert_jobs([
-            _sample_job("test-001", score=0.5, status="high_matcheded"),
-            _sample_job("test-002", score=0.9, status="high_matcheded"),
+            _sample_job("test-001", score=0.5, status="high_matched"),
+            _sample_job("test-002", score=0.9, status="high_matched"),
         ])
         job = db.fetch_next_job()
         assert job is not None
@@ -115,7 +115,7 @@ class TestFetchNextJob:
 
     def test_returns_none_when_no_pending(self):
         db.upsert_jobs([_sample_job("test-001", status="Drop")])
-        job = db.fetch_next_job(statuses=["high_matcheded", "mid_matched"])
+        job = db.fetch_next_job(statuses=["high_matched", "mid_matched"])
         # test-001 has status Drop so should not be returned
         assert job is None or job["id"] != "test-001"
 
@@ -155,11 +155,11 @@ class TestFetchStats:
 
     def test_counts_are_correct(self):
         db.upsert_jobs([
-            _sample_job("test-001", status="high_matcheded"),
-            _sample_job("test-002", status="high_matcheded"),
+            _sample_job("test-001", status="high_matched"),
+            _sample_job("test-002", status="high_matched"),
             _sample_job("test-003", status="Drop"),
         ])
         stats = db.fetch_stats()
         # These counts may include rows from real data, so just check >= not ==
-        assert stats.get("high_matcheded", 0) >= 2
+        assert stats.get("high_matched", 0) >= 2
         assert stats.get("Drop", 0) >= 1
