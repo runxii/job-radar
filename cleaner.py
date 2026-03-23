@@ -3,7 +3,7 @@ Stage 2 - Cleaner
 Normalises raw JobSpy records into a consistent schema and removes duplicates.
 """
 from __future__ import annotations
-
+from datetime import datetime, timezone
 
 def _str(value, fallback: str = "N/A") -> str:
     if value is None:
@@ -28,33 +28,27 @@ def clean_job(raw: dict) -> dict:
         "post_url":    post_url,
         "description": _str(raw.get("description"), fallback=""),
         "location":    _str(raw.get("location")),
+        "scraped_at":  datetime.now(timezone.utc).isoformat(),
     }
 
 
 def clean_jobs(raw_jobs: list[dict]) -> tuple[list[dict], list[dict]]:
     """
     Clean and deduplicate a list of raw records.
-
+ 
     Returns
     -------
-    cleaned   : all records after normalisation (including dups for raw sheet)
+    cleaned      : all records after normalisation (including dups for raw storage)
     deduplicated : unique records by id (for downstream processing)
     """
     cleaned = [clean_job(r) for r in raw_jobs]
-
+ 
     seen: set[str] = set()
     deduplicated: list[dict] = []
     for job in cleaned:
         if job["id"] not in seen:
             seen.add(job["id"])
             deduplicated.append(job)
-
+ 
     print(f"[cleaner] {len(cleaned)} records cleaned, {len(deduplicated)} unique")
     return cleaned, deduplicated
-
-
-if __name__ == "__main__":
-    sample = [{"id": "123", "title": "SWE", "company": "ACME", "date_posted": "2024-01-01",
-               "job_url_direct": None, "job_url": None, "description": "desc", "location": "Dublin"}]
-    cleaned, deduped = clean_jobs(sample)
-    print(cleaned)

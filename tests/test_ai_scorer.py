@@ -9,14 +9,14 @@ from ai_scorer import _parse_response, _label, score_job, score_jobs
 
 class TestLabel:
     def test_high_match(self):
-        assert _label(0.65) == "AI Apply"
-        assert _label(0.90) == "AI Apply"
-        assert _label(1.00) == "AI Apply"
+        assert _label(0.7) == "high_matched"
+        assert _label(0.90) == "high_matched"
+        assert _label(1.00) == "high_matched"
 
     def test_mid_match(self):
-        assert _label(0.40) == "Human Apply"
-        assert _label(0.50) == "Human Apply"
-        assert _label(0.64) == "Human Apply"
+        assert _label(0.40) == "mid_matched"
+        assert _label(0.50) == "mid_matched"
+        assert _label(0.69) == "mid_matched"
 
     def test_low_match(self):
         assert _label(0.00) == "Drop"
@@ -61,12 +61,12 @@ class TestScoreJob:
         client = self._make_mock_client(0.80)
         result = score_job(self._make_job(), "My great CV", client)
         assert result["match_score"] == pytest.approx(0.80)
-        assert result["status"] == "AI Apply"
+        assert result["status"] == "high_matched"
 
     def test_human_apply_label(self):
         client = self._make_mock_client(0.55)
         result = score_job(self._make_job(), "My great CV", client)
-        assert result["status"] == "Human Apply"
+        assert result["status"] == "mid_matched"
 
     def test_drop_label(self):
         client = self._make_mock_client(0.20)

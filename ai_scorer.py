@@ -68,9 +68,9 @@ Job Description:
 
 def _label(score: float) -> str:
     if score >= config.HIGH_MATCH_THRESHOLD:
-        return "AI Apply"
+        return "high_matched"
     if score >= config.MID_MATCH_THRESHOLD:
-        return "Human Apply"
+        return "mid_matched"
     return "Drop"
 
 

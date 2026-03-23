@@ -19,15 +19,14 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = "gpt-5-mini"
 
 # Score thresholds
-HIGH_MATCH_THRESHOLD = 0.65   # → AI Apply
-MID_MATCH_THRESHOLD  = 0.40   # → Human Apply  (below this → Drop)
+HIGH_MATCH_THRESHOLD = 0.7   # → high_matched
+MID_MATCH_THRESHOLD  = 0.40   # → mid_matched  (below this → Drop)
 
 # --- CV ---
 CV_PATH = "cv.txt"
-123
-# --- Output ---
-OUTPUT_EXCEL = "output/jobs.xlsx"
-SHEET_RAW       = "raw"
-SHEET_MATCHED   = "matched"
-SHEET_UNMATCHED = "unmatched"
 
+
+# --- Supabase ---
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+ 
