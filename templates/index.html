@@ -480,7 +480,7 @@
   async function cardAction(action) {
     if (!currentJobId) return;
     document.querySelectorAll(".card-actions .btn").forEach(b => b.disabled = true);
-    if (action === "Applied") window.open(document.querySelector(".card-link")?.href, "_blank");
+    // if (action === "Applied") window.open(document.querySelector(".card-link")?.href, "_blank");
     if (action === "__delete__") {
       await deleteJob(currentJobId);
     } else {

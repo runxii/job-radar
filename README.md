@@ -3,11 +3,13 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--API-412991?style=flat&logo=openai&logoColor=white)
 ![JobSpy](https://img.shields.io/badge/Scraper-JobSpy-0A66C2?style=flat)
-![Database](https://img.shields.io/badge/Output-Supabase%20DB-2563EB?style=flat&logo=supabase&logoColor=white)
+![Database](https://img.shields.io/badge/Database-PostgreSQL-2563EB?style=flat&logo=supabase&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-pytest-brightgreen?style=flat&logo=pytest)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)
 
 > An end-to-end job search automation pipeline that scrapes LinkedIn daily, filters out roles you'll never get, and uses AI to score the ones worth applying to — all saved in a Supabase/Postgres database with an optional local FastAPI UI for instant review.
+
+![local app with FastAPI](src/app_screenshot.png)
 
 ---
 
