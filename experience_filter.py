@@ -21,22 +21,22 @@ _SENIOR_KEYWORDS = re.compile(
 
 # Ordered list of patterns - first match with the lowest year wins.
 _YEAR_PATTERNS: list[re.Pattern] = [
-    # "3+ years of experience" / "5 years relevant experience"
-    re.compile(r"(\d{1,2})\+?\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experiences?\b", re.I),
+    # "3+ years of experience" / "5 years relevant experience" / "7\+ years' experience in software engineering"
+    re.compile(r"(\d{1,2})(?:\\?\+)?\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experiences?\b", re.I),
     # "6+ years in software development"
-    re.compile(r"(\d{1,2})\+?\s*years?\s+in\s+.{0,60}?(?:experience)?\b", re.I),
+    re.compile(r"(\d{1,2})(?:\\?\+)?\s*years?\s+in\s+.{0,60}?(?:experience)?\b", re.I),
     # "3+ years experience"
-    re.compile(r"(\d{1,2})\+?\s*years?\s+experience\b", re.I),
+    re.compile(r"(\d{1,2})(?:\\?\+)??\s*years?\s+experience\b", re.I),
     # "3-5 years of experience" → capture minimum
-    re.compile(r"(\d{1,2})\s*[--]\s*\d{1,2}\s*years?\s+of\s+(?:\w+\s+){0,3}?experience\b", re.I),
+    re.compile(r"(\d{1,2})\s*[--]\s*(\d{1,2})\s*years?\s+of\s+(?:\w+\s+){0,3}?experience\b", re.I),
     # "minimum / at least / over / more than 5 years"
     re.compile(r"(?:minimum|min\.?|at\s+least|over|more\s+than)(?:\s+of)?\s+(\d{1,2})\s+(?:consecutive\s+)?years?\b", re.I),
     # "10+ yoe"
-    re.compile(r"(\d{1,2})\+?\s*yoe\b", re.I),
+    re.compile(r"(\d{1,2})(?:\\?\+)?\s*yoe\b", re.I),
     # "5+ years in" / "8+ years with"
-    re.compile(r"(\d{1,2})\+?\s*years?\s+(?:in|with)\b", re.I),
-    # "5 years' experience"
-    re.compile(r"(\d{1,2})\+?\s*years?'?\s+experience\b", re.I),
+    re.compile(r"(\d{1,2})(?:\\?\+)?\s*years?\s+(?:in|with)\b", re.I),
+    # "5-10 years' experience"
+    re.compile(r"(\d{1,2})\s*[--]\s*(\d{1,2})\s*years?'?\s+experience\b", re.I),
     # "10 years or more of experience"
     re.compile(r"(\d{1,2})\s*years?\s+(?:or\s+more|and\s+above|\+)?\s*of\s+.{0,100}?experience\b", re.I),
     # generic fallback: "5-years industry experience"

@@ -67,6 +67,9 @@ Experience: ...
 # Mac / Linux
 export OPENAI_API_KEY=sk-...
 
+# Permanent set in Linux
+echo "export OPENAI_API_KEY=sk-..." >> ~/.bashrc
+
 # Windows (PowerShell)
 setx OPENAI_API_KEY sk-...
 ```
