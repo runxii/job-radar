@@ -157,7 +157,7 @@ def fetch_jobs_by_status(status: str, limit: int = 200) -> list[dict]:
     return rows
 
 
-def fetch_all_jobs(limit: int = 200) -> list[dict]:
+def fetch_all_jobs(limit: int = 3000) -> list[dict]:
     response = (
         get_client()
         .table("jobs")
@@ -190,18 +190,17 @@ def delete_job(job_id: str) -> None:
 
 
 def fetch_stats() -> dict[str, int]:
-    response = (
-        get_client()
-        .table("jobs")
-        .select("status")
-        .execute()
-    )
-
-    rows = response.data or []
-
+    statuses = ["high_matched", "mid_matched", "Applied", "Saved", "Drop"]
     counts: dict[str, int] = {}
-    for row in rows:
-        status = (row.get("status") or "Unknown").strip()
-        counts[status] = counts.get(status, 0) + 1
+
+    for status in statuses:
+        response = (
+            get_client()
+            .table("jobs")
+            .select("id", count="exact")
+            .eq("status", status)
+            .execute()
+        )
+        counts[status] = response.count or 0
 
     return counts
