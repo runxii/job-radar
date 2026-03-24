@@ -189,10 +189,19 @@ def delete_job(job_id: str) -> None:
     print(f"[db] deleted job {job_id}")
 
 
-def fetch_stats() -> dict:
-    response = get_client().table("jobs").select("status").execute()
+def fetch_stats() -> dict[str, int]:
+    response = (
+        get_client()
+        .table("jobs")
+        .select("status")
+        .execute()
+    )
+
+    rows = response.data or []
+
     counts: dict[str, int] = {}
-    for row in response.data:
-        s = row["status"] or "Unknown"
-        counts[s] = counts.get(s, 0) + 1
+    for row in rows:
+        status = (row.get("status") or "Unknown").strip()
+        counts[status] = counts.get(status, 0) + 1
+
     return counts

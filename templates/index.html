@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-  /* ── Global Scale (simulate Chrome 175%) ───────────────────── */
+  /* ── Global Scale (simulate Chrome 150%) ───────────────────── */
   :root {
   --scale: 1.5;
   }
@@ -404,11 +404,20 @@
   // ── Stats bar ────────────────────────────────────────────────
   async function loadStats() {
     const data  = await apiFetch("/api/stats");
+    const orderMap = {
+      "high_matched": "high match",
+      "mid_matched": "mid match",
+      "Applied": "applied",
+      "Saved": "saved",
+      "Drop": "drop",
+    };
     const order = ["high_matched","mid_matched","Applied","Saved","Drop"];
     document.getElementById("stats-bar").innerHTML = order
-      .filter(k => data[k])
-      .map(k => `<span class="stat" onclick="switchView('${k}')">${k.toLowerCase()}: <span class="n">${data[k]}</span></span>`)
-      .join("");
+    .filter(k => data[k])
+    .map(
+      k => `<span class="stat" onclick="switchView('${k}')">${orderMap[k]}: <span class="n">${data[k]}</span></span>`
+    )
+    .join("");
   }
 
   // ── API ──────────────────────────────────────────────────────

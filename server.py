@@ -14,7 +14,7 @@ import os
 
 app = FastAPI(title="JobRadar")
 
-ALL_STATUSES = {"high_matched", "mid_matched", "Applied", "Skipped", "Saved", "Drop"}
+ALL_STATUSES = {"high_matched", "mid_matched", "Applied", "Saved", "Drop"}
 
 
 # --------------------------------------------------------------------------- #

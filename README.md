@@ -88,7 +88,7 @@ python main.py
 Output is saved to your Supabase/Postgres table `jobs`.
 
 - `raw`: initial scraped records (upserted every run)
-- `high_matched`, `mid_matched`, `Drop`, `Applied`, `Skipped`, `Saved`: status-based buckets
+- `high_matched`, `mid_matched`, `Drop`, `Applied`, `Saved`: status-based buckets
 
 ### 5. Optional: Run local review server
 
