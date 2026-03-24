@@ -6,6 +6,7 @@ Usage:
 
 Then open http://localhost:8000
 """
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -20,6 +21,7 @@ ALL_STATUSES = {"high_matched", "mid_matched", "Applied", "Saved", "Drop"}
 # --------------------------------------------------------------------------- #
 # API                                                                          #
 # --------------------------------------------------------------------------- #
+
 
 @app.get("/api/jobs/next")
 def next_job():
@@ -62,6 +64,7 @@ def delete_job(job_id: str):
 # --------------------------------------------------------------------------- #
 # Frontend                                                                     #
 # --------------------------------------------------------------------------- #
+
 
 @app.get("/", response_class=HTMLResponse)
 def index():

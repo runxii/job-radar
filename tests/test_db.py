@@ -13,8 +13,10 @@ Setup before running:
 These tests write and delete real rows. They are isolated by using
 ids prefixed with 'test-' and cleaned up in teardown.
 """
+
 import sys
 import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
@@ -24,7 +26,7 @@ import db
 # Skip entire module if credentials are not set
 pytestmark = pytest.mark.skipif(
     not os.getenv("SUPABASE_URL") or not os.getenv("SUPABASE_KEY"),
-    reason="SUPABASE_URL and SUPABASE_KEY not set - skipping integration tests"
+    reason="SUPABASE_URL and SUPABASE_KEY not set - skipping integration tests",
 )
 
 
@@ -34,17 +36,18 @@ pytestmark = pytest.mark.skipif(
 
 TEST_IDS = ["test-001", "test-002", "test-003"]
 
+
 def _sample_job(job_id: str, score: float = 0.75, status: str = "high_matched") -> dict:
     return {
-        "id":          job_id,
-        "title":       "Test Software Engineer",
-        "company":     "Test Corp",
-        "post_url":    f"https://linkedin.com/jobs/view/{job_id}",
+        "id": job_id,
+        "title": "Test Software Engineer",
+        "company": "Test Corp",
+        "post_url": f"https://linkedin.com/jobs/view/{job_id}",
         "description": "A test job description.",
-        "location":    "Dublin, Ireland",
-        "scraped_at":  datetime.now(timezone.utc).isoformat(),
+        "location": "Dublin, Ireland",
+        "scraped_at": datetime.now(timezone.utc).isoformat(),
         "match_score": score,
-        "status":      status,
+        "status": status,
     }
 
 
@@ -66,6 +69,7 @@ def _delete_test_rows():
 # Tests                                                                        #
 # --------------------------------------------------------------------------- #
 
+
 class TestUpsertJobs:
     def test_insert_single_record(self):
         db.upsert_jobs([_sample_job("test-001")])
@@ -86,7 +90,7 @@ class TestUpsertJobs:
         assert abs(row.data[0]["match_score"] - 0.9) < 1e-6
 
     def test_empty_list_is_noop(self):
-        db.upsert_jobs([])   # should not raise
+        db.upsert_jobs([])  # should not raise
 
 
 class TestFetchKnownIds:
@@ -106,10 +110,12 @@ class TestFetchKnownIds:
 
 class TestFetchNextJob:
     def test_returns_highest_score_first(self):
-        db.upsert_jobs([
-            _sample_job("test-001", score=0.5, status="high_matched"),
-            _sample_job("test-002", score=0.9, status="high_matched"),
-        ])
+        db.upsert_jobs(
+            [
+                _sample_job("test-001", score=0.5, status="high_matched"),
+                _sample_job("test-002", score=0.9, status="high_matched"),
+            ]
+        )
         job = db.fetch_next_job()
         assert job is not None
         assert job["id"] == "test-002"
@@ -155,11 +161,13 @@ class TestFetchStats:
         assert isinstance(result, dict)
 
     def test_counts_are_correct(self):
-        db.upsert_jobs([
-            _sample_job("test-001", status="high_matched"),
-            _sample_job("test-002", status="high_matched"),
-            _sample_job("test-003", status="Drop"),
-        ])
+        db.upsert_jobs(
+            [
+                _sample_job("test-001", status="high_matched"),
+                _sample_job("test-002", status="high_matched"),
+                _sample_job("test-003", status="Drop"),
+            ]
+        )
         stats = db.fetch_stats()
         # These counts may include rows from real data, so just check >= not ==
         assert stats.get("high_matched", 0) >= 2

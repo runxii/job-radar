@@ -3,6 +3,7 @@ Stage 4 - AI Scorer
 Sends each matched job + CV to OpenAI for fit scoring.
 Ported from the n8n "Message a model" + "Parse AI output" nodes.
 """
+
 from __future__ import annotations
 import json
 import time
@@ -94,7 +95,7 @@ def score_job(job: dict, cv: str, client) -> dict:
         model=config.OPENAI_MODEL,
         messages=[
             {"role": "system", "content": _SYSTEM_PROMPT},
-            {"role": "user",   "content": prompt},
+            {"role": "user", "content": prompt},
         ],
     )
 
@@ -103,11 +104,13 @@ def score_job(job: dict, cv: str, client) -> dict:
 
     result = dict(job)
     result["match_score"] = parsed.get("overall_fit", 0.0)
-    result["skills_required"] = json.dumps({
-        "stack":          parsed.get("stack_match"),
-        "responsibility": parsed.get("res_match"),
-        "engineering":    parsed.get("engi_match"),
-    })
+    result["skills_required"] = json.dumps(
+        {
+            "stack": parsed.get("stack_match"),
+            "responsibility": parsed.get("res_match"),
+            "engineering": parsed.get("engi_match"),
+        }
+    )
     result["status"] = _label(result["match_score"])
     return result
 

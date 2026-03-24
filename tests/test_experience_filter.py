@@ -1,5 +1,6 @@
 import sys
 import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
@@ -12,15 +13,18 @@ from experience_filter import (
 
 
 class TestTitleImpliesSenior:
-    @pytest.mark.parametrize("title", [
-        "Principal Engineer",
-        "Lead Software Engineer",
-        "Head of Engineering",
-        "Engineering Director",
-        "Engineering Manager",
-        "LEAD developer",
-        "VP of Engineering",        # 'VP' not in list - should NOT match (see below)
-    ])
+    @pytest.mark.parametrize(
+        "title",
+        [
+            "Principal Engineer",
+            "Lead Software Engineer",
+            "Head of Engineering",
+            "Engineering Director",
+            "Engineering Manager",
+            "LEAD developer",
+            "VP of Engineering",  # 'VP' not in list - should NOT match (see below)
+        ],
+    )
     def test_senior_titles(self, title):
         # VP is not in the keyword list, only principal/lead/head/director/manager
         if "VP" in title:
@@ -28,45 +32,54 @@ class TestTitleImpliesSenior:
         else:
             assert title_implies_senior(title) is True
 
-    @pytest.mark.parametrize("title", [
-        "Software Engineer",
-        "Graduate Engineer",
-        "Junior Developer",
-        "QA Engineer",
-        "Technical Support Engineer",
-        "",
-    ])
+    @pytest.mark.parametrize(
+        "title",
+        [
+            "Software Engineer",
+            "Graduate Engineer",
+            "Junior Developer",
+            "QA Engineer",
+            "Technical Support Engineer",
+            "",
+        ],
+    )
     def test_non_senior_titles(self, title):
         assert title_implies_senior(title) is False
 
 
 class TestExtractExplicitYears:
-    @pytest.mark.parametrize("text, expected_years", [
-        ("3+ years of experience required",             3),
-        ("minimum 5 years of relevant experience",      5),
-        ("at least 4 years experience",                 4),
-        ("over 7 years of experience",                  7),
-        ("more than 6 years in software development",   6),
-        ("2-4 years of experience",                     2),   # range → minimum
-        ("10+ yoe required",                            10),
-        ("requires 8 years with Python",                8),
-        ("5 years' experience in cloud",                5),
-        ("1 year of experience",                        1),
-        ("2 years relevant professional experience",    2),
-    ])
+    @pytest.mark.parametrize(
+        "text, expected_years",
+        [
+            ("3+ years of experience required", 3),
+            ("minimum 5 years of relevant experience", 5),
+            ("at least 4 years experience", 4),
+            ("over 7 years of experience", 7),
+            ("more than 6 years in software development", 6),
+            ("2-4 years of experience", 2),  # range → minimum
+            ("10+ yoe required", 10),
+            ("requires 8 years with Python", 8),
+            ("5 years' experience in cloud", 5),
+            ("1 year of experience", 1),
+            ("2 years relevant professional experience", 2),
+        ],
+    )
     def test_explicit_patterns(self, text, expected_years):
         result = extract_explicit_years(text)
         assert result["years"] == expected_years
         assert result["explicit"] is True
         assert result["evidence"] != ""
 
-    @pytest.mark.parametrize("text", [
-        "No experience required",
-        "Fresh graduates welcome",
-        "Entry level position",
-        "",
-        "   ",
-    ])
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "No experience required",
+            "Fresh graduates welcome",
+            "Entry level position",
+            "",
+            "   ",
+        ],
+    )
     def test_no_years_found(self, text):
         result = extract_explicit_years(text)
         assert result["years"] == 0
@@ -79,7 +92,7 @@ class TestExtractExplicitYears:
 
     def test_ignores_absurd_values(self):
         result = extract_explicit_years("50 years of experience needed")
-        assert result["years"] == 0   # >40 is ignored
+        assert result["years"] == 0  # >40 is ignored
 
 
 class TestAnnotateExperience:
@@ -87,7 +100,9 @@ class TestAnnotateExperience:
         return {"id": "1", "title": title, "description": description}
 
     def test_senior_title_overrides_description(self):
-        job = self._job(title="Lead Engineer", description="2 years experience required")
+        job = self._job(
+            title="Lead Engineer", description="2 years experience required"
+        )
         result = annotate_experience(job)
         assert result["explicit_years_required"] == 10
         assert result["is_explicit_exp_requirement"] is False
@@ -119,13 +134,13 @@ class TestFilterByExperience:
         jobs = [
             self._job("1", "No experience required"),
             self._job("2", "2+ years of experience"),
-            self._job("3", "5+ years of experience"),   # should be filtered out
+            self._job("3", "5+ years of experience"),  # should be filtered out
             self._job("4", "10+ years of experience"),  # should be filtered out
         ]
         matched, unmatched = filter_by_experience(jobs, max_years=3)
-        matched_ids   = {j["id"] for j in matched}
+        matched_ids = {j["id"] for j in matched}
         unmatched_ids = {j["id"] for j in unmatched}
-        assert matched_ids   == {"1", "2"}
+        assert matched_ids == {"1", "2"}
         assert unmatched_ids == {"3", "4"}
 
     def test_empty_input(self):
@@ -140,7 +155,9 @@ class TestFilterByExperience:
         assert len(unmatched) == 0
 
     def test_senior_title_always_unmatched(self):
-        jobs = [{"id": "X", "title": "Principal Engineer", "description": "entry level"}]
+        jobs = [
+            {"id": "X", "title": "Principal Engineer", "description": "entry level"}
+        ]
         matched, unmatched = filter_by_experience(jobs, max_years=3)
         assert len(matched) == 0
         assert len(unmatched) == 1

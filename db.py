@@ -21,6 +21,7 @@ Table schema (run once in Supabase SQL editor):
         status                      text
     );
 """
+
 from __future__ import annotations
 from datetime import datetime, timezone
 from supabase import create_client, Client
@@ -29,7 +30,9 @@ import config
 _client: Client | None = None
 
 # remove physical last_operated_at from select
-LIST_COLS = "id, title, company, match_score, post_url, status, scraped_at, applied_at, drop_at"
+LIST_COLS = (
+    "id, title, company, match_score, post_url, status, scraped_at, applied_at, drop_at"
+)
 
 
 def get_client() -> Client:
@@ -46,6 +49,7 @@ def get_client() -> Client:
 # --------------------------------------------------------------------------- #
 # helpers                                                                     #
 # --------------------------------------------------------------------------- #
+
 
 def _parse_ts(value: str | None) -> datetime | None:
     if not value:
@@ -76,7 +80,10 @@ def _compute_last_operated_at(row: dict) -> str | None:
     if not candidates:
         return None
 
-    latest = max(candidates, key=lambda ts: _parse_ts(ts) or datetime.min.replace(tzinfo=timezone.utc))
+    latest = max(
+        candidates,
+        key=lambda ts: _parse_ts(ts) or datetime.min.replace(tzinfo=timezone.utc),
+    )
     return latest
 
 
@@ -109,6 +116,7 @@ def _sort_rows_by_last_operated_at(rows: list[dict]) -> list[dict]:
 # Pipeline writes                                                              #
 # --------------------------------------------------------------------------- #
 
+
 def upsert_jobs(records: list[dict]) -> None:
     if not records:
         return
@@ -116,17 +124,11 @@ def upsert_jobs(records: list[dict]) -> None:
     print(f"[db] upserted {len(records)} records")
 
 
-def fetch_known_ids(ids:list[str]) -> set[str]:
+def fetch_known_ids(ids: list[str]) -> set[str]:
     if not ids:
         return set()
 
-    response = (
-        get_client()
-        .table("jobs")
-        .select("id")
-        .in_("id", ids)
-        .execute()
-    )
+    response = get_client().table("jobs").select("id").in_("id", ids).execute()
     return {str(r["id"]) for r in (response.data or [])}
 
     # response = get_client().table("jobs").select("id").execute()
@@ -137,7 +139,10 @@ def fetch_known_ids(ids:list[str]) -> set[str]:
 # Server reads                                                                 #
 # --------------------------------------------------------------------------- #
 
-def fetch_next_job(statuses: list[str] = ("high_matched", "mid_matched")) -> dict | None:
+
+def fetch_next_job(
+    statuses: list[str] = ("high_matched", "mid_matched"),
+) -> dict | None:
     response = (
         get_client()
         .table("jobs")
