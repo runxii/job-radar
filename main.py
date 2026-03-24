@@ -28,9 +28,12 @@ def run():
     cleaned, deduped = clean_jobs(raw_jobs)
 
     # Skip jobs already processed in a previous run
+    ids = [str(r["id"]) for r in deduped]
+    existing_ids = fetch_known_ids(ids)
+    new_jobs=[r for r in deduped if str(r["id"]) not in existing_ids]
 
-    known_ids = {str(x) for x in fetch_known_ids()}
-    new_jobs = [j for j in deduped if str(j["id"]) not in known_ids]
+    #known_ids = {str(x) for x in fetch_known_ids()}
+    # new_jobs = [j for j in deduped if str(j["id"]) not in known_ids]
 
     if new_jobs:
         print(f"[main] {len(new_jobs)} new jobs to process "

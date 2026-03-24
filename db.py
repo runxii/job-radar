@@ -116,9 +116,21 @@ def upsert_jobs(records: list[dict]) -> None:
     print(f"[db] upserted {len(records)} records")
 
 
-def fetch_known_ids() -> set[str]:
-    response = get_client().table("jobs").select("id").execute()
-    return {row["id"] for row in response.data}
+def fetch_known_ids(ids:list[str]) -> set[str]:
+    if not ids:
+        return set()
+
+    response = (
+        get_client()
+        .table("jobs")
+        .select("id")
+        .in_("id", ids)
+        .execute()
+    )
+    return {str(r["id"]) for r in (response.data or [])}
+
+    # response = get_client().table("jobs").select("id").execute()
+    # return {row["id"] for row in response.data}
 
 
 # --------------------------------------------------------------------------- #
@@ -154,20 +166,6 @@ def fetch_jobs_by_status(status: str, limit: int = 200) -> list[dict]:
     rows = response.data or []
     rows = _attach_last_operated_at(rows)
     rows = _sort_rows_by_last_operated_at(rows)
-    return rows
-
-
-def fetch_all_jobs(limit: int = 3000) -> list[dict]:
-    response = (
-        get_client()
-        .table("jobs")
-        .select(LIST_COLS)
-        .order("match_score", desc=True)
-        .limit(limit)
-        .execute()
-    )
-    rows = response.data or []
-    rows = _attach_last_operated_at(rows)
     return rows
 
 
