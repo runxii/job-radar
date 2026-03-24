@@ -1,23 +1,29 @@
-import sys, os
+import sys
+import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pandas as pd
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from scraper import fetch_jobs
 
 
 def _fake_df(n=3, prefix=""):
-    return pd.DataFrame([{
-        "id": f"{prefix}{i}",
-        "title": f"Engineer {i}",
-        "company": "ACME",
-        "date_posted": "2024-01-01",
-        "job_url_direct": f"https://apply.example.com/{i}",
-        "job_url": f"https://linkedin.com/jobs/view/{i}",
-        "description": f"Description {i}",
-        "location": "Dublin, Ireland",
-    } for i in range(n)])
+    return pd.DataFrame(
+        [
+            {
+                "id": f"{prefix}{i}",
+                "title": f"Engineer {i}",
+                "company": "ACME",
+                "date_posted": "2024-01-01",
+                "job_url_direct": f"https://apply.example.com/{i}",
+                "job_url": f"https://linkedin.com/jobs/view/{i}",
+                "description": f"Description {i}",
+                "location": "Dublin, Ireland",
+            }
+            for i in range(n)
+        ]
+    )
 
 
 class TestFetchJobs:
@@ -28,7 +34,9 @@ class TestFetchJobs:
         assert all(isinstance(r, dict) for r in results)
 
     def test_combines_multiple_queries(self):
-        with patch("scraper.scrape_jobs", side_effect=[_fake_df(2, "A"), _fake_df(2, "B")]):
+        with patch(
+            "scraper.scrape_jobs", side_effect=[_fake_df(2, "A"), _fake_df(2, "B")]
+        ):
             results = fetch_jobs(queries=["SWE", "QA"], delay_seconds=0)
         assert len(results) == 4
 

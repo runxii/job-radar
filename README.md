@@ -3,11 +3,13 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--API-412991?style=flat&logo=openai&logoColor=white)
 ![JobSpy](https://img.shields.io/badge/Scraper-JobSpy-0A66C2?style=flat)
-![Excel](https://img.shields.io/badge/Output-Excel%20(.xlsx)-217346?style=flat&logo=microsoftexcel&logoColor=white)
+![Database](https://img.shields.io/badge/Database-PostgreSQL-2563EB?style=flat&logo=supabase&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-pytest-brightgreen?style=flat&logo=pytest)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)
 
-> An end-to-end job search automation pipeline that scrapes LinkedIn daily, filters out roles you'll never get, and uses AI to score the ones worth applying to — all saved to a local Excel file.
+> An end-to-end job search automation pipeline that scrapes LinkedIn daily, filters out roles you'll never get, and uses AI to score the ones worth applying to — all saved in a Supabase/Postgres database with an optional local FastAPI UI for instant review.
+
+![local app with FastAPI](src/app_screenshot.png)
 
 ---
 
@@ -31,7 +33,10 @@ LinkedIn (JobSpy)
   Stage 4: AI Scoring     — GPT-4o-mini scores each job against your CV
       │
       ▼
-  Stage 5: Excel Output   — upsert into jobs.xlsx (raw / matched / unmatched)
+  Stage 5: DB Upsert     — upsert into `jobs` table via `db.py`
+      │
+      ▼
+  (Optional) Local UI    — `server.py` exposes FastAPI + browser dashboard
 ```
 
 Each run is **incremental** — jobs already recorded in a previous run are skipped automatically.
@@ -80,13 +85,19 @@ setx OPENAI_API_KEY sk-...
 python main.py
 ```
 
-Output is saved to `output/jobs.xlsx` with three sheets:
+Output is saved to your Supabase/Postgres table `jobs`.
 
-| Sheet | Contents |
-|---|---|
-| `raw` | Every job scraped, unfiltered |
-| `matched` | Jobs that passed the experience filter, with AI scores and status |
-| `unmatched` | Jobs filtered out (too senior, wrong role type, etc.) |
+- `raw`: initial scraped records (upserted every run)
+- `high_matched`, `mid_matched`, `Drop`, `Applied`, `Saved`: status-based buckets
+
+### 5. Optional: Run local review server
+
+```bash
+# with uvicorn installed
+uvicorn server:app --reload
+```
+
+Open `http://localhost:8000` to review job cards and update status interactively.
 
 ---
 
@@ -114,15 +125,16 @@ All tunable parameters live in `config.py`:
 | Parameter | Default | Description |
 |---|---|---|
 | `OPENAI_MODEL` | `"gpt-5-mini"` | Model used for scoring. Swap to `gpt-5` for higher accuracy. |
-| `HIGH_MATCH_THRESHOLD` | `0.65` | Score at or above this → `AI Apply` |
-| `MID_MATCH_THRESHOLD` | `0.40` | Score at or above this → `Human Apply`. Below → `Drop` |
+| `HIGH_MATCH_THRESHOLD` | `0.65` | Score at or above this → `high_matched` |
+| `MID_MATCH_THRESHOLD` | `0.40` | Score at or above this → `mid_matched`. Below → `Drop` |
 
 ### Output
 
 | Parameter | Default | Description |
 |---|---|---|
 | `CV_PATH` | `"cv.txt"` | Path to your CV text file. |
-| `OUTPUT_EXCEL` | `"output/jobs.xlsx"` | Path to the output workbook. |
+| `SUPABASE_URL` | `""` | Supabase project URL (set via env var). |
+| `SUPABASE_KEY` | `""` | Supabase anon/service key (set via env var). |
 
 ---
 
@@ -140,8 +152,8 @@ Each job is scored across three axes, then averaged into `overall_fit`:
 
 | Score | Label | Meaning |
 |---|---|---|
-| ≥ 0.65 | **AI Apply** | Strong fit — meets most requirements |
-| 0.40 – 0.64 | **Human Apply** | Partial fit — worth reviewing manually |
+| ≥ 0.70 | **high_matched** | Strong fit — meets most requirements |
+| 0.40 – 0.64 | **mid_matched** | Partial fit — worth reviewing manually |
 | < 0.40 | **Drop** | Poor fit — fundamental mismatch |
 | 0.00 | **Hard disqualified** | Triggered a hard disqualifier (see below) |
 
@@ -166,17 +178,17 @@ JobRadar/
 ├── cleaner.py               # Stage 2 — schema normalisation & dedup
 ├── experience_filter.py     # Stage 3 — regex year extraction & filtering
 ├── ai_scorer.py             # Stage 4 — OpenAI scoring
-├── excel_writer.py          # Stage 5 — Excel upsert writer
+├── db.py                    # Stage 5 — Supabase/Postgres upsert writer
+├── server.py                # FastAPI local review server
 ├── cv.txt                   # Your CV (plain text)
 ├── requirements.txt
-├── output/
-│   └── jobs.xlsx            # Generated on first run
+├── output/                  # (optional local output folder; not required for DB flow)
 └── tests/
     ├── test_scraper.py
     ├── test_cleaner.py
     ├── test_experience_filter.py
     ├── test_ai_scorer.py
-    └── test_excel_writer.py
+    └── test_db.py
 ```
 
 ---
@@ -200,9 +212,11 @@ pytest tests/ -v
 ```
 python-jobspy
 openai>=1.0.0
-openpyxl>=3.1.0
 pandas>=2.0.0
 pytest>=7.0.0
+supabase>=1.0.0
+fastapi>=0.110.0
+uvicorn>=0.23.0
 ```
 
 ---

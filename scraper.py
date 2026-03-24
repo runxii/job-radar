@@ -3,6 +3,7 @@ Stage 1 - Scraper
 Fetches LinkedIn job listings via JobSpy for each keyword in config.
 Returns a list of raw job dicts (JobSpy DataFrame rows).
 """
+
 import time
 import pandas as pd
 from jobspy import scrape_jobs
@@ -32,14 +33,14 @@ def fetch_jobs(
                 results_wanted=results_wanted,
                 hours_old=hours_old,
                 linkedin_fetch_description=True,
-                country_indeed="Ireland",   # ignored for linkedin but harmless
+                country_indeed="Ireland",  # ignored for linkedin but harmless
             )
             print(f"[scraper] Got {len(df)} results")
             all_frames.append(df)
         except Exception as exc:
             print(f"[scraper] WARNING: query '{query}' failed - {exc}")
 
-        time.sleep(delay_seconds)   # be polite to LinkedIn
+        time.sleep(delay_seconds)  # be polite to LinkedIn
 
     if not all_frames:
         return []

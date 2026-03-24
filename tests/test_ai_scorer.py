@@ -1,4 +1,6 @@
-import sys, os
+import sys
+import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import json
@@ -9,14 +11,14 @@ from ai_scorer import _parse_response, _label, score_job, score_jobs
 
 class TestLabel:
     def test_high_match(self):
-        assert _label(0.65) == "AI Apply"
-        assert _label(0.90) == "AI Apply"
-        assert _label(1.00) == "AI Apply"
+        assert _label(0.7) == "high_matched"
+        assert _label(0.90) == "high_matched"
+        assert _label(1.00) == "high_matched"
 
     def test_mid_match(self):
-        assert _label(0.40) == "Human Apply"
-        assert _label(0.50) == "Human Apply"
-        assert _label(0.64) == "Human Apply"
+        assert _label(0.40) == "mid_matched"
+        assert _label(0.50) == "mid_matched"
+        assert _label(0.69) == "mid_matched"
 
     def test_low_match(self):
         assert _label(0.00) == "Drop"
@@ -46,13 +48,15 @@ class TestScoreJob:
 
     def _make_mock_client(self, overall_fit: float):
         mock_resp = MagicMock()
-        mock_resp.choices[0].message.content = json.dumps({
-            "id": "42",
-            "stack_match": overall_fit,
-            "res_match": overall_fit,
-            "engi_match": overall_fit,
-            "overall_fit": overall_fit,
-        })
+        mock_resp.choices[0].message.content = json.dumps(
+            {
+                "id": "42",
+                "stack_match": overall_fit,
+                "res_match": overall_fit,
+                "engi_match": overall_fit,
+                "overall_fit": overall_fit,
+            }
+        )
         client = MagicMock()
         client.chat.completions.create.return_value = mock_resp
         return client
@@ -61,12 +65,12 @@ class TestScoreJob:
         client = self._make_mock_client(0.80)
         result = score_job(self._make_job(), "My great CV", client)
         assert result["match_score"] == pytest.approx(0.80)
-        assert result["status"] == "AI Apply"
+        assert result["status"] == "high_matched"
 
     def test_human_apply_label(self):
         client = self._make_mock_client(0.55)
         result = score_job(self._make_job(), "My great CV", client)
-        assert result["status"] == "Human Apply"
+        assert result["status"] == "mid_matched"
 
     def test_drop_label(self):
         client = self._make_mock_client(0.20)
@@ -98,8 +102,10 @@ class TestScoreJobs:
         client = MagicMock()
         client.chat.completions.create.side_effect = Exception("API error")
 
-        with patch("ai_scorer.OpenAI", return_value=client), \
-             patch("ai_scorer.config.OPENAI_API_KEY", "fake-key"):
+        with (
+            patch("ai_scorer.OpenAI", return_value=client),
+            patch("ai_scorer.config.OPENAI_API_KEY", "fake-key"),
+        ):
             results = score_jobs([self._make_job("1")], "CV", delay_seconds=0)
 
         assert len(results) == 1
@@ -107,16 +113,25 @@ class TestScoreJobs:
         assert results[0]["match_score"] == 0.0
 
     def test_processes_all_jobs(self):
-        response_json = json.dumps({"id": "x", "stack_match": 0.7,
-                                    "res_match": 0.7, "engi_match": 0.7, "overall_fit": 0.7})
+        response_json = json.dumps(
+            {
+                "id": "x",
+                "stack_match": 0.7,
+                "res_match": 0.7,
+                "engi_match": 0.7,
+                "overall_fit": 0.7,
+            }
+        )
         mock_resp = MagicMock()
         mock_resp.choices[0].message.content = response_json
         client = MagicMock()
         client.chat.completions.create.return_value = mock_resp
 
         jobs = [self._make_job(str(i)) for i in range(3)]
-        with patch("ai_scorer.OpenAI", return_value=client), \
-             patch("ai_scorer.config.OPENAI_API_KEY", "fake-key"):
+        with (
+            patch("ai_scorer.OpenAI", return_value=client),
+            patch("ai_scorer.config.OPENAI_API_KEY", "fake-key"),
+        ):
             results = score_jobs(jobs, "CV", delay_seconds=0)
 
         assert len(results) == 3
