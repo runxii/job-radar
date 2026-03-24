@@ -26,14 +26,17 @@ def run():
  
     # Stage 2 - Clean & deduplicate
     cleaned, deduped = clean_jobs(raw_jobs)
-    upsert_jobs(deduped)   # persist all raw records immediately
- 
+
     # Skip jobs already processed in a previous run
-    known_ids = fetch_known_ids()
+
+    known_ids = {str(x) for x in fetch_known_ids()}
     new_jobs = [j for j in deduped if str(j["id"]) not in known_ids]
-    print(f"[main] {len(new_jobs)} new jobs to process "
-          f"(skipping {len(deduped) - len(new_jobs)} already in DB)")
- 
+
+    if new_jobs:
+        print(f"[main] {len(new_jobs)} new jobs to process "
+            f"(skipping {len(deduped) - len(new_jobs)} already in DB)")
+        upsert_jobs(new_jobs)
+        
     if not new_jobs:
         print("[main] Nothing new. Exiting.")
         sys.exit(0)
