@@ -6,7 +6,6 @@ Usage:
 """
 import sys
 import config
-import pandas as pd
 from scraper import fetch_jobs
 from cleaner import clean_jobs
 from experience_filter import filter_by_experience

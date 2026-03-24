@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import json
@@ -8,7 +9,7 @@ from ai_scorer import _parse_response, _label, score_job, score_jobs
 
 
 class TestLabel:
-    def test_high_matched(self):
+    def test_high_match(self):
         assert _label(0.7) == "high_matched"
         assert _label(0.90) == "high_matched"
         assert _label(1.00) == "high_matched"

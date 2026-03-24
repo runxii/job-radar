@@ -13,11 +13,13 @@ Setup before running:
 These tests write and delete real rows. They are isolated by using
 ids prefixed with 'test-' and cleaned up in teardown.
 """
-import sys, os
+import sys
+import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 from datetime import datetime, timezone
+import db
 
 # Skip entire module if credentials are not set
 pytestmark = pytest.mark.skipif(
@@ -25,7 +27,6 @@ pytestmark = pytest.mark.skipif(
     reason="SUPABASE_URL and SUPABASE_KEY not set - skipping integration tests"
 )
 
-import db
 
 # --------------------------------------------------------------------------- #
 # Fixtures                                                                     #
@@ -133,12 +134,12 @@ class TestUpdateStatus:
         row = client.table("jobs").select("status").eq("id", "test-001").execute()
         assert row.data[0]["status"] == "Applied"
 
-    # def test_updates_to_skipped(self):
-    #     db.upsert_jobs([_sample_job("test-001")])
-    #     db.update_status("test-001", "Skipped")
-    #     client = db.get_client()
-    #     row = client.table("jobs").select("status").eq("id", "test-001").execute()
-    #     assert row.data[0]["status"] == "Skipped"
+    def test_updates_to_skipped(self):
+        db.upsert_jobs([_sample_job("test-001")])
+        db.update_status("test-001", "Skipped")
+        client = db.get_client()
+        row = client.table("jobs").select("status").eq("id", "test-001").execute()
+        assert row.data[0]["status"] == "Skipped"
 
     def test_updates_to_saved(self):
         db.upsert_jobs([_sample_job("test-001")])
