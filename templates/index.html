@@ -7,10 +7,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset ─────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ── Global Scale (simulate Chrome 175%) ───────────────────── */
+  :root {
+  --scale: 1.5;
+  }
 
-    :root {
+  html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.6;
+
+  /* scale */
+  zoom: var(--scale);
+  }
+
+  /* ── Reset ─────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
       --bg:        #0d0d0d;
       --surface:   #141414;
       --border:    #222;
@@ -24,46 +41,38 @@
       --blue:      #60a5fa;
       --purple:    #a78bfa;
       --font:      'Fira Code', monospace;
-    }
+  }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 13px;
-      line-height: 1.6;
-    }
 
-    /* ── Layout ─────────────────────────────────────────────── */
-    .shell {
+  /* ── Layout ─────────────────────────────────────────────── */
+  .shell {
       display: grid;
       grid-template-rows: auto auto 1fr;
       height: 100vh;
       max-width: 900px;
       margin: 0 auto;
       padding: 0 16px;
-    }
+  }
 
-    /* ── Header ─────────────────────────────────────────────── */
-    header {
+  /* ── Header ─────────────────────────────────────────────── */
+  header {
       display: flex;
       align-items: baseline;
       gap: 12px;
       padding: 20px 0 12px;
       border-bottom: 1px solid var(--border);
-    }
+  }
 
-    .logo {
+  .logo {
       font-size: 15px;
       font-weight: 600;
       color: var(--bright);
       letter-spacing: 0.04em;
-    }
+  }
 
-    .logo span { color: var(--green); }
+  .logo span { color: var(--green); }
 
-    #stats-bar {
+  #stats-bar {
       font-size: 11px;
       color: var(--dim);
       margin-left: auto;
@@ -71,23 +80,23 @@
       gap: 14px;
       flex-wrap: wrap;
       justify-content: flex-end;
-    }
+  }
 
-    #stats-bar .stat { cursor: pointer; }
-    #stats-bar .stat:hover { color: var(--text); }
-    #stats-bar .stat .n { color: var(--bright); font-weight: 500; }
+  #stats-bar .stat { cursor: pointer; }
+  #stats-bar .stat:hover { color: var(--text); }
+  #stats-bar .stat .n { color: var(--bright); font-weight: 500; }
 
-    /* ── Nav ────────────────────────────────────────────────── */
-    nav {
+  /* ── Nav ────────────────────────────────────────────────── */
+  nav {
       display: flex;
       gap: 0;
       border-bottom: 1px solid var(--border);
       overflow-x: auto;
       scrollbar-width: none;
-    }
-    nav::-webkit-scrollbar { display: none; }
+  }
+  nav::-webkit-scrollbar { display: none; }
 
-    .nav-btn {
+  .nav-btn {
       background: none;
       border: none;
       border-bottom: 2px solid transparent;
@@ -99,24 +108,24 @@
       white-space: nowrap;
       transition: color 0.1s, border-color 0.1s;
       margin-bottom: -1px;
-    }
-    .nav-btn:hover { color: var(--text); }
-    .nav-btn.active {
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active {
       color: var(--green);
       border-bottom-color: var(--green);
-    }
+  }
 
-    /* ── Main pane ───────────────────────────────────────────── */
-    main {
+  /* ── Main pane ───────────────────────────────────────────── */
+  main {
       overflow-y: auto;
       padding: 20px 0 40px;
-    }
+  }
 
-    /* ── Card view ───────────────────────────────────────────── */
-    #card-view { display: none; }
-    #card-view.visible { display: block; }
+  /* ── Card view ───────────────────────────────────────────── */
+  #card-view { display: none; }
+  #card-view.visible { display: block; }
 
-    .card {
+  .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 4px;
@@ -124,30 +133,30 @@
       max-width: 560px;
       margin: 0 auto;
       position: relative;
-    }
+  }
 
-    .card-score {
+  .card-score {
       position: absolute;
       top: 20px; right: 20px;
       font-size: 18px;
       font-weight: 600;
-    }
+  }
 
-    .card-title {
+  .card-title {
       font-size: 15px;
       font-weight: 500;
       color: var(--bright);
       padding-right: 56px;
       margin-bottom: 4px;
-    }
+  }
 
-    .card-meta {
+  .card-meta {
       font-size: 11px;
       color: var(--dim);
       margin-bottom: 6px;
-    }
+  }
 
-    .tag {
+  .tag {
       display: inline-block;
       font-size: 10px;
       padding: 1px 8px;
@@ -157,9 +166,9 @@
       margin-bottom: 16px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-    }
+  }
 
-    .card-link {
+  .card-link {
       display: block;
       font-size: 11px;
       color: var(--blue);
@@ -168,15 +177,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    .card-link:hover { text-decoration: underline; }
+  }
+  .card-link:hover { text-decoration: underline; }
 
-    .card-actions {
+  .card-actions {
       display: flex;
       gap: 8px;
-    }
+  }
 
-    .btn {
+  .btn {
       font-family: var(--font);
       font-size: 11px;
       padding: 6px 16px;
@@ -187,22 +196,21 @@
       cursor: pointer;
       transition: background 0.1s, color 0.1s, border-color 0.1s;
       letter-spacing: 0.04em;
-    }
-    .btn:hover  { background: var(--muted); color: var(--bright); }
-    .btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .btn-apply  { border-color: var(--green); color: var(--green); }
-    .btn-apply:hover  { background: var(--green); color: var(--bg); }
-    .btn-save   { border-color: var(--blue);  color: var(--blue);  }
-    .btn-save:hover   { background: var(--blue);  color: var(--bg); }
-    .btn-skip   { border-color: var(--muted); }
-    .btn-danger { border-color: var(--red);   color: var(--red);   }
-    .btn-danger:hover { background: var(--red); color: var(--bg); }
+  }
+  .btn:hover  { background: var(--muted); color: var(--bright); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-apply  { border-color: var(--green); color: var(--green); }
+  .btn-apply:hover  { background: var(--green); color: var(--bg); }
+  .btn-save   { border-color: var(--blue);  color: var(--blue);  }
+  .btn-save:hover   { background: var(--blue);  color: var(--bg); }
+  .btn-danger { border-color: var(--red);   color: var(--red);   }
+  .btn-danger:hover { background: var(--red); color: var(--bg); }
 
-    /* ── List view ───────────────────────────────────────────── */
-    #list-view { display: none; }
-    #list-view.visible { display: block; }
+  /* ── List view ───────────────────────────────────────────── */
+  #list-view { display: none; }
+  #list-view.visible { display: block; }
 
-    .list-header {
+  .list-header {
       display: grid;
       grid-template-columns: 1fr 160px 140px 110px 72px;
       gap: 8px;
@@ -212,9 +220,9 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       border-bottom: 1px solid var(--border);
-    }
+  }
 
-    .list-row {
+  .list-row {
       display: grid;
       grid-template-columns: 1fr 160px 140px 110px 72px;
       gap: 8px;
@@ -222,32 +230,32 @@
       padding: 9px 8px;
       border-bottom: 1px solid var(--border);
       transition: background 0.08s;
-    }
-    .list-row:hover { background: var(--surface); }
+  }
+  .list-row:hover { background: var(--surface); }
 
-    .list-row .col-title {
+  .list-row .col-title {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       color: var(--bright);
       font-size: 12px;
-    }
-    .list-row .col-title a {
+  }
+  .list-row .col-title a {
       color: inherit;
       text-decoration: none;
-    }
-    .list-row .col-title a:hover { text-decoration: underline; color: var(--blue); }
+  }
+  .list-row .col-title a:hover { text-decoration: underline; color: var(--blue); }
 
-    .list-row .col-company,
-    .list-row .col-date {
+  .list-row .col-company,
+  .list-row .col-date {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       color: var(--dim);
       font-size: 11px;
-    }
+  }
 
-    .status-pill {
+  .status-pill {
       display: inline-block;
       font-size: 10px;
       padding: 2px 7px;
@@ -256,15 +264,15 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       white-space: nowrap;
-    }
+  }
 
-    .col-actions {
+  .col-actions {
       display: flex;
       gap: 6px;
       justify-content: flex-end;
-    }
+  }
 
-    .icon-btn {
+  .icon-btn {
       background: none;
       border: none;
       color: var(--dim);
@@ -274,12 +282,12 @@
       padding: 2px 4px;
       border-radius: 2px;
       transition: color 0.1s, background 0.1s;
-    }
-    .icon-btn:hover        { color: var(--bright); background: var(--muted); }
-    .icon-btn.del:hover    { color: var(--red); }
+  }
+  .icon-btn:hover        { color: var(--bright); background: var(--muted); }
+  .icon-btn.del:hover    { color: var(--red); }
 
-    /* ── Status select dropdown ──────────────────────────────── */
-    select.status-select {
+  /* ── Status select dropdown ──────────────────────────────── */
+  select.status-select {
       font-family: var(--font);
       font-size: 10px;
       background: var(--surface);
@@ -289,26 +297,28 @@
       padding: 2px 4px;
       cursor: pointer;
       outline: none;
-    }
-    select.status-select:focus { border-color: var(--blue); }
+  }
+  select.status-select:focus { border-color: var(--blue); }
 
-    /* ── Empty / loading ─────────────────────────────────────── */
-    .empty {
+  /* ── Empty / loading ─────────────────────────────────────── */
+  .empty {
       text-align: center;
       color: var(--dim);
       padding: 60px 0;
       font-size: 12px;
-    }
-    .empty .big { font-size: 28px; margin-bottom: 12px; display: block; }
+  }
+  .empty .big { font-size: 28px; margin-bottom: 12px; display: block; }
 
-    /* ── Status colours ──────────────────────────────────────── */
-    .s-ai      { color: var(--green);  border-color: var(--green); }
-    .s-human   { color: var(--yellow); border-color: var(--yellow); }
-    .s-applied { color: var(--blue);   border-color: var(--blue); }
-    .s-saved   { color: var(--purple); border-color: var(--purple); }
-    .s-skipped { color: var(--dim);    border-color: var(--muted); }
-    .s-drop    { color: var(--red);    border-color: var(--red); }
+  /* ── Status colours ──────────────────────────────────────── */
+  .s-ai      { color: var(--green);  border-color: var(--green); }
+  .s-human   { color: var(--yellow); border-color: var(--yellow); }
+  .s-applied { color: var(--blue);   border-color: var(--blue); }
+  .s-saved   { color: var(--purple); border-color: var(--purple); }
+  .s-drop    { color: var(--red);    border-color: var(--red); }
+
+
   </style>
+
 </head>
 <body>
 <div class="shell">
@@ -327,7 +337,7 @@
     <button class="nav-btn" data-view="mid_matched">mid match</button>
     <button class="nav-btn" data-view="Applied">applied</button>
     <button class="nav-btn" data-view="Saved">saved</button>
-    <button class="nav-btn" data-view="Skipped">skipped</button>
+    <!-- <button class="nav-btn" data-view="Skipped">skipped</button> -->
     <button class="nav-btn" data-view="Drop">drop</button>
   </nav>
 
@@ -386,16 +396,15 @@
       "mid_matched": "s-human",
       "Applied":     "s-applied",
       "Saved":       "s-saved",
-      "Skipped":     "s-skipped",
       "Drop":        "s-drop",
     };
-    return map[status] || "s-skipped";
+    return map[status];
   }
 
   // ── Stats bar ────────────────────────────────────────────────
   async function loadStats() {
     const data  = await apiFetch("/api/stats");
-    const order = ["high_matched","mid_matched","Applied","Saved","Skipped","Drop"];
+    const order = ["high_matched","mid_matched","Applied","Saved","Drop"];
     document.getElementById("stats-bar").innerHTML = order
       .filter(k => data[k])
       .map(k => `<span class="stat" onclick="switchView('${k}')">${k.toLowerCase()}: <span class="n">${data[k]}</span></span>`)
@@ -471,8 +480,8 @@
         <div class="card-actions">
           <button class="btn btn-apply" onclick="cardAction('Applied')">apply</button>
           <button class="btn btn-save"  onclick="cardAction('Saved')">save</button>
-          <button class="btn btn-skip"  onclick="cardAction('Skipped')">skip</button>
-          <button class="btn btn-danger" onclick="cardAction('__delete__')">delete</button>
+          <button class="btn btn-danger"  onclick="cardAction('Drop')">drop</button>
+          <!-- <button class="btn btn-danger" onclick="cardAction('__delete__')">delete</button> -->
         </div>
       </div>`;
   }
@@ -491,7 +500,7 @@
   }
 
   // ── List view ────────────────────────────────────────────────
-  const ALL_STATUSES = ["high_matched","mid_matched","Applied","Saved","Skipped","Drop"];
+  const ALL_STATUSES = ["high_matched","mid_matched","Applied","Saved","Drop"];
 
   async function loadList(status) {
     const url  = status ? `/api/jobs?status=${encodeURIComponent(status)}` : "/api/jobs";

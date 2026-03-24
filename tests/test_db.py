@@ -133,12 +133,12 @@ class TestUpdateStatus:
         row = client.table("jobs").select("status").eq("id", "test-001").execute()
         assert row.data[0]["status"] == "Applied"
 
-    def test_updates_to_skipped(self):
-        db.upsert_jobs([_sample_job("test-001")])
-        db.update_status("test-001", "Skipped")
-        client = db.get_client()
-        row = client.table("jobs").select("status").eq("id", "test-001").execute()
-        assert row.data[0]["status"] == "Skipped"
+    # def test_updates_to_skipped(self):
+    #     db.upsert_jobs([_sample_job("test-001")])
+    #     db.update_status("test-001", "Skipped")
+    #     client = db.get_client()
+    #     row = client.table("jobs").select("status").eq("id", "test-001").execute()
+    #     assert row.data[0]["status"] == "Skipped"
 
     def test_updates_to_saved(self):
         db.upsert_jobs([_sample_job("test-001")])

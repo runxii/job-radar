@@ -13,7 +13,7 @@ Table schema (run once in Supabase SQL editor):
         location                    text,
         scraped_at                  timestamptz,
         applied_at                  timestamptz,
-        skipped_at                  timestamptz,
+        drop_at                  timestamptz,
         explicit_years_required     integer,
         is_explicit_exp_requirement boolean,
         exp_evidence                text,
@@ -29,7 +29,7 @@ import config
 _client: Client | None = None
 
 # remove physical last_operated_at from select
-LIST_COLS = "id, title, company, match_score, post_url, status, scraped_at, applied_at, skipped_at"
+LIST_COLS = "id, title, company, match_score, post_url, status, scraped_at, applied_at, drop_at"
 
 
 def get_client() -> Client:
@@ -60,19 +60,19 @@ def _parse_ts(value: str | None) -> datetime | None:
 def _compute_last_operated_at(row: dict) -> str | None:
     """
     Rule:
-    - mix of scraped_at, applied_at, skipped_at
-    - if applied_at and skipped_at are both None, display scraped_at
+    - mix of scraped_at, applied_at, drop_at
+    - if applied_at and drop_at are both None, display scraped_at
     - if all 3 are None, return None
     - otherwise use the latest non-null timestamp among the 3
     """
     scraped_at = row.get("scraped_at")
     applied_at = row.get("applied_at")
-    skipped_at = row.get("skipped_at")
+    drop_at = row.get("drop_at")
 
-    if applied_at is None and skipped_at is None:
+    if applied_at is None and drop_at is None:
         return scraped_at  # may also be None
 
-    candidates = [ts for ts in [scraped_at, applied_at, skipped_at] if ts is not None]
+    candidates = [ts for ts in [scraped_at, applied_at, drop_at] if ts is not None]
     if not candidates:
         return None
 
@@ -141,7 +141,7 @@ def fetch_next_job(statuses: list[str] = ("high_matched", "mid_matched")) -> dic
 def fetch_jobs_by_status(status: str, limit: int = 200) -> list[dict]:
     """
     Return jobs filtered by status.
-    last_operated_at is computed from scraped_at / applied_at / skipped_at.
+    last_operated_at is computed from scraped_at / applied_at / drop_at.
     """
     response = (
         get_client()
@@ -177,8 +177,8 @@ def update_status(job_id: str, status: str) -> None:
     payload = {"status": status}
     if status == "Applied":
         payload["applied_at"] = now
-    elif status == "Skipped":
-        payload["skipped_at"] = now
+    elif status == "Drop":
+        payload["drop_at"] = now
 
     get_client().table("jobs").update(payload).eq("id", job_id).execute()
     print(f"[db] job {job_id} -> {status}")
