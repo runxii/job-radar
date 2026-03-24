@@ -5,20 +5,21 @@ All pipeline stages write here. server.py reads from here.
 Table schema (run once in Supabase SQL editor):
 
     create table jobs (
-        id                          text primary key,
-        title                       text,
-        company                     text,
-        post_url                    text,
-        description                 text,
-        location                    text,
-        scraped_at                  timestamptz,
-        applied_at                  timestamptz,
-        drop_at                  timestamptz,
-        explicit_years_required     integer,
-        is_explicit_exp_requirement boolean,
-        exp_evidence                text,
-        match_score                 float,
-        status                      text
+            id                          text primary key,
+            title                       text,
+            company                     text,
+            post_url                    text,
+            description                 text,
+            location                    text,
+            scraped_at                  timestamptz,
+            explicit_years_required     integer,
+            is_explicit_exp_requirement boolean,
+            exp_evidence                text,
+            match_score                 float,
+            skills_required             jsonb,
+            status                      text,
+            drop_at                     timestamptz,
+            applied_at                  timestamptz
     );
 """
 
@@ -33,6 +34,8 @@ _client: Client | None = None
 LIST_COLS = (
     "id, title, company, match_score, post_url, status, scraped_at, applied_at, drop_at"
 )
+
+TABLE_NAME = "jobs"
 
 
 def get_client() -> Client:
@@ -120,7 +123,7 @@ def _sort_rows_by_last_operated_at(rows: list[dict]) -> list[dict]:
 def upsert_jobs(records: list[dict]) -> None:
     if not records:
         return
-    get_client().table("jobs").upsert(records, on_conflict="id").execute()
+    get_client().table(TABLE_NAME).upsert(records, on_conflict="id").execute()
     print(f"[db] upserted {len(records)} records")
 
 
@@ -128,10 +131,10 @@ def fetch_known_ids(ids: list[str]) -> set[str]:
     if not ids:
         return set()
 
-    response = get_client().table("jobs").select("id").in_("id", ids).execute()
+    response = get_client().table(TABLE_NAME).select("id").in_("id", ids).execute()
     return {str(r["id"]) for r in (response.data or [])}
 
-    # response = get_client().table("jobs").select("id").execute()
+    # response = get_client().table(TABLE_NAME).select("id").execute()
     # return {row["id"] for row in response.data}
 
 
@@ -145,7 +148,7 @@ def fetch_next_job(
 ) -> dict | None:
     response = (
         get_client()
-        .table("jobs")
+        .table(TABLE_NAME)
         .select("id, title, company, match_score, post_url, location, status")
         .in_("status", list(statuses))
         .order("match_score", desc=True)
@@ -162,7 +165,7 @@ def fetch_jobs_by_status(status: str, limit: int = 200) -> list[dict]:
     """
     response = (
         get_client()
-        .table("jobs")
+        .table(TABLE_NAME)
         .select(LIST_COLS)
         .eq("status", status)
         .limit(limit)
@@ -183,12 +186,12 @@ def update_status(job_id: str, status: str) -> None:
     elif status == "Drop":
         payload["drop_at"] = now
 
-    get_client().table("jobs").update(payload).eq("id", job_id).execute()
+    get_client().table(TABLE_NAME).update(payload).eq("id", job_id).execute()
     print(f"[db] job {job_id} -> {status}")
 
 
 def delete_job(job_id: str) -> None:
-    get_client().table("jobs").delete().eq("id", job_id).execute()
+    get_client().table(TABLE_NAME).delete().eq("id", job_id).execute()
     print(f"[db] deleted job {job_id}")
 
 
@@ -199,7 +202,7 @@ def fetch_stats() -> dict[str, int]:
     for status in statuses:
         response = (
             get_client()
-            .table("jobs")
+            .table(TABLE_NAME)
             .select("id", count="exact")
             .eq("status", status)
             .execute()
