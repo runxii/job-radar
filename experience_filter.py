@@ -27,31 +27,26 @@ _YEAR_PATTERNS: list[re.Pattern] = [
         r"(\d{1,2})\s*[-–]\s*(\d{1,2})\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experience\b",
         re.I,
     ),
-
     # minimum 5 years / at least 7 years / more than 10 years
     re.compile(
         r"(?:minimum|min\.?|at\s+least|over|more\s+than)\s+(?:of\s+)?(\d{1,2})\s+(?:consecutive\s+)?years?\b",
         re.I,
     ),
-
     # 3+ years of experience / 5 years relevant experience / 7\+ years' experience
     re.compile(
         r"(\d{1,2})(?:\\?\+)?\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experience\b",
         re.I,
     ),
-
     # 10+ yoe
     re.compile(
         r"(\d{1,2})(?:\\?\+)?\s*yoe\b",
         re.I,
     ),
-
     # generic fallback: 5 years in software development / 5-years industry experience
     re.compile(
         r"(\d{1,2})\s*-?\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?(?:experience|experiences)\b",
         re.I,
     ),
-
     # requires 8 years with/in/of
     re.compile(
         r"(?:requires?|need(?:s|ed)?|seeking)\s+(\d{1,2})(?:\\?\+)?\s*years?\s+(?:of|in|with)\b",
