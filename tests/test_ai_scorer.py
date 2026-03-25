@@ -16,8 +16,8 @@ class TestLabel:
         assert _label(1.00) == "high_matched"
 
     def test_mid_match(self):
-        assert _label(0.40) == "mid_matched"
-        assert _label(0.50) == "mid_matched"
+        assert _label(0.45) == "mid_matched"
+        assert _label(0.55) == "mid_matched"
         assert _label(0.69) == "mid_matched"
 
     def test_low_match(self):

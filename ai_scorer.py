@@ -50,7 +50,7 @@ tech_adj: fit=avg(tm,rm,cm)
 Caps if no direct evidence:
 - customer_ops max 0.35
 - product max 0.55
-- tech_adj max 0.65
+- tech_adj max 0.70
 
 Use exact evidence, not general professionalism.
 Do not treat teamwork/docs/delivery alone as customer or product evidence.
