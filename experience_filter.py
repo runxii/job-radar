@@ -34,7 +34,7 @@ _YEAR_PATTERNS: list[re.Pattern] = [
     ),
     # 3+ years of experience / 5 years relevant experience / 7\+ years' experience
     re.compile(
-        r"(\d{1,2})(?:\\?\+)?\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experience\b",
+        r"(\d{1,2})(?:\\?\+)?\s*years?\u2019?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experience\b",
         re.I,
     ),
     # 10+ yoe

@@ -182,7 +182,6 @@ pytest tests/ -v
 Unit test coverage report by `pytest-cov`:
 
 ``` bash
-
 Name                              Stmts   Miss  Cover
 -----------------------------------------------------
 ai_scorer.py                         52      6    88%
@@ -191,7 +190,6 @@ config.py                            13      0   100%
 db.py                                83      4    95%
 experience_filter.py                 47      2    96%
 main.py                              42     42     0%
-migrate.py                           33     33     0%
 scraper.py                           22      2    91%
 server.py                            38     38     0%
 tests\test_ai_scorer.py              88      0   100%
@@ -200,7 +198,7 @@ tests\test_db.py                    179      0   100%
 tests\test_experience_filter.py      80      0   100%
 tests\test_scraper.py                38      0   100%
 -----------------------------------------------------
-TOTAL                               791    127    84%
+TOTAL                               758     94    88%
 ```
 
 ---

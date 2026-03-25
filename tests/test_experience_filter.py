@@ -64,7 +64,7 @@ class TestExtractExplicitYears:
             ("2 years relevant professional experience", 2),
             ("7\\+ years of experience in software", 7),
             ("Minimum of 4 years of relevant technical experience", 4),
-            ("5\\+ years of work experience", 5),
+            ("3 – 5 years’ progressive experience in", 5),
         ],
     )
     def test_explicit_patterns(self, text, expected_years):
