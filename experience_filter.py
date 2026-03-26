@@ -42,9 +42,9 @@ _YEAR_PATTERNS: list[re.Pattern] = [
         r"(\d{1,2})(?:\\?\+)?\s*yoe\b",
         re.I,
     ),
-    # generic fallback: 5 years in software development / 5-years industry experience
+    # generic fallback: 5 years in software development / 5-years industry experience / 3-5 years as a professional
     re.compile(
-        r"(\d{1,2})\s*-?\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?(?:experience|experiences)\b",
+        r"(?:\d{1,2}\s*[-–]\s*)?(\d{1,2})\s*years?'?\s*(?:of\s+|in\s+|with\s+|as\s+)?(?:\w+\s+){0,8}\b",
         re.I,
     ),
     # requires 8 years with/in/of
