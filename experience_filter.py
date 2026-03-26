@@ -22,11 +22,6 @@ _SENIOR_KEYWORDS = re.compile(
 
 # Ordered list of patterns - first match with the lowest year wins.
 _YEAR_PATTERNS: list[re.Pattern] = [
-    # 3-5 years of experience / 5-10 years' experience
-    re.compile(
-        r"(\d{1,2})\s*[-–]\s*(\d{1,2})\s*years?'?\s*(?:of\s+|in\s+|with\s+)?(?:\w+\s+){0,6}?experience\b",
-        re.I,
-    ),
     # minimum 5 years / at least 7 years / more than 10 years
     re.compile(
         r"(?:minimum|min\.?|at\s+least|over|more\s+than)\s+(?:of\s+)?(\d{1,2})\s+(?:consecutive\s+)?years?\b",
