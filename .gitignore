@@ -11,3 +11,4 @@ output/
 .ruff_cache
 .coverage
 venv/
+config.py

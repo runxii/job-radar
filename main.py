@@ -28,18 +28,26 @@ def run():
     # Stage 2 - Clean & deduplicate
     cleaned, deduped = clean_jobs(raw_jobs)
 
+    # Stage 3 - Experience filter
+    matched_jobs, unmatched_jobs = filter_by_experience(deduped)
+
+    # Persist unmatched with status=Drop so they appear in DB but won't surface in UI
+    for j in unmatched_jobs:
+        j["status"] = "Drop"
+    upsert_jobs(unmatched_jobs)
+
     # Skip jobs already processed in a previous run
-    ids = [str(r["id"]) for r in deduped]
+    ids = [str(r["id"]) for r in matched_jobs]
     existing_ids = fetch_known_ids(ids)
-    new_jobs = [r for r in deduped if str(r["id"]) not in existing_ids]
+    new_jobs = [r for r in matched_jobs if str(r["id"]) not in existing_ids]
 
     # known_ids = {str(x) for x in fetch_known_ids()}
-    # new_jobs = [j for j in deduped if str(j["id"]) not in known_ids]
+    # new_jobs = [j for j in matched_jobs if str(j["id"]) not in known_ids]
 
     if new_jobs:
         print(
             f"[main] {len(new_jobs)} new jobs to process "
-            f"(skipping {len(deduped) - len(new_jobs)} already in DB)"
+            f"(skipping {len(matched_jobs) - len(new_jobs)} already in DB)"
         )
         upsert_jobs(new_jobs)
 
@@ -47,21 +55,13 @@ def run():
         print("[main] Nothing new. Exiting.")
         sys.exit(0)
 
-    # Stage 3 - Experience filter
-    matched_jobs, unmatched_jobs = filter_by_experience(new_jobs)
-
-    # Persist unmatched with status=Drop so they appear in DB but won't surface in UI
-    for j in unmatched_jobs:
-        j["status"] = "Drop"
-    upsert_jobs(unmatched_jobs)
-
     if not matched_jobs:
         print("[main] All jobs filtered out by experience requirement. Exiting.")
         sys.exit(0)
 
     # Stage 4 - AI scoring
     cv = load_cv(config.CV_PATH)
-    scored_jobs = score_jobs(matched_jobs, cv)
+    scored_jobs = score_jobs(new_jobs, cv)
 
     # Stage 5 - Persist scored jobs
     upsert_jobs(scored_jobs)
