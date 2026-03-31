@@ -51,7 +51,7 @@ class TestExtractExplicitYears:
     @pytest.mark.parametrize(
         "text, expected_years",
         [
-            ("3\\+ years of experience required", 3),
+            (r"3\+ years of experience required", 3),
             ("minimum 5 years of relevant experience", 5),
             ("at least 4 years experience", 4),
             ("over 7 years of experience", 7),
@@ -61,11 +61,12 @@ class TestExtractExplicitYears:
             ("5 years' experience in cloud", 5),
             ("1 year of experience", 1),
             ("2 years relevant professional experience", 2),
-            ("7\\+ years of experience in software", 7),
+            ("7+ years of experience in software", 7),
             ("Minimum of 4 years of relevant technical experience", 4),
             ("3 – 5 years’ progressive experience in", 5),
             ("3 - 5 years as a professional software engineer", 5),
-            ("3–6+ years’ experience as", 6),
+            (r"3–6\+ years’ experience as", 6),
+            (r"5\+ years’ software engineering experience", 5),
         ],
     )
     def test_explicit_patterns(self, text, expected_years):

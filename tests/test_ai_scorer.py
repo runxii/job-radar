@@ -22,7 +22,7 @@ class TestLabel:
 
     def test_low_match(self):
         assert _label(0.00) == "Drop"
-        assert _label(0.39) == "Drop"
+        assert _label(0.44) == "Drop"
 
 
 class TestParseResponse:

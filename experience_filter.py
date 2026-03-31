@@ -17,7 +17,7 @@ import config
 # --------------------------------------------------------------------------- #
 
 _SENIOR_KEYWORDS = re.compile(
-    r"\b(principal|lead|head|director|manager)\b", re.IGNORECASE
+    r"\b(principal|lead|head|director|manager|leader)\b", re.IGNORECASE
 )
 
 # Ordered list of patterns - first match with the lowest year wins.
@@ -51,7 +51,9 @@ _YEAR_PATTERNS: list[re.Pattern] = [
 
 
 def _normalize(text: str) -> str:
+    text = repr(text)
     text = text.replace("\u00a0", " ")
+    text = text.replace(r"\+", "+")
     text = re.sub(r"\s+", " ", text)
     return text.lower().strip()
 
