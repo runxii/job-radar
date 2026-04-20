@@ -9,11 +9,7 @@ SEARCH_QUERIES = [
 ]
 SEARCH_LOCATION = "Ireland"
 RESULTS_WANTED = 70  # per keyword; set up to 200 when running for real
-<<<<<<< HEAD
-HOURS_OLD = 48  # only jobs posted in last 24h
-=======
 HOURS_OLD = 24  # only jobs posted in last 24h
->>>>>>> 6e2e387 (chore(server): Port is 8999 now. Avoid conflicts.)
 
 # --- Experience Filter ---
 MAX_YEARS_EXPERIENCE = 3  # drop jobs requiring more than this
