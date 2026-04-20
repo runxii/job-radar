@@ -4,7 +4,7 @@ server.py - FastAPI mini app for reviewing job cards.
 Usage:
     SUPABASE_URL=... SUPABASE_KEY=... uvicorn server:app --reload
 
-Then open http://localhost:8000
+Then open http://localhost:8999
 """
 
 from fastapi import FastAPI, HTTPException

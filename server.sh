@@ -6,7 +6,7 @@ source venv/bin/activate
 echo "Using Python: $(which python)"
 
 # 2) start the server in the background
-uvicorn server:app --reload &
+uvicorn server:app --reload --port=8999 &
 UVICORN_PID=$!
 
 echo "Server started (PID=$UVICORN_PID)"
