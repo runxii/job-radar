@@ -5,74 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JobRadar</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-  /* ── Global Scale (simulate Chrome 150%) ───────────────────── */
-  :root {
-  --scale: 1.5;
-  }
+    :root {
+      --scale: 1.5;
+      --bg: #0d0d0d;
+      --surface: #151515;
+      --surface-2: #1b1b1b;
+      --border: #3a3a3a;
+      --muted: #4c4c4c;
+      --dim: #a3a3a3;
+      --text: #dddddd;
+      --bright: #f5f5f5;
+      --green: #6ee7a4;
+      --yellow: #f5d45d;
+      --red: #ff8d8d;
+      --blue: #8ab4ff;
+      --purple: #c4a8ff;
+      --focus: #cfe1ff;
+      --font: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+      --radius: 4px;
+      --page-size: 50;
+    }
 
-  html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 13px;
-  line-height: 1.6;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* scale */
-  zoom: var(--scale);
-  }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      zoom: var(--scale);
+    }
 
-  /* ── Reset ─────────────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+    }
 
-  :root {
-      --bg:        #0d0d0d;
-      --surface:   #141414;
-      --border:    #222;
-      --muted:     #3a3a3a;
-      --dim:       #555;
-      --text:      #ccc;
-      --bright:    #eee;
-      --green:     #4ade80;
-      --yellow:    #facc15;
-      --red:       #f87171;
-      --blue:      #60a5fa;
-      --purple:    #a78bfa;
-      --font:      'Fira Code', monospace;
-  }
+    a, button, select {
+      font: inherit;
+    }
 
+    a:focus-visible,
+    button:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
 
-  /* ── Layout ─────────────────────────────────────────────── */
-  .shell {
+    .shell {
       display: grid;
-      grid-template-rows: auto auto 1fr;
+      grid-template-rows: auto auto auto 1fr;
       height: 100vh;
       max-width: 900px;
       margin: 0 auto;
       padding: 0 16px;
-  }
+    }
 
-  /* ── Header ─────────────────────────────────────────────── */
-  header {
+    header {
       display: flex;
       align-items: baseline;
       gap: 12px;
       padding: 20px 0 12px;
       border-bottom: 1px solid var(--border);
-  }
+    }
 
-  .logo {
+    .logo {
       font-size: 15px;
       font-weight: 600;
       color: var(--bright);
       letter-spacing: 0.04em;
-  }
+    }
 
-  .logo span { color: var(--green); }
+    .logo span { color: var(--green); }
 
-  #stats-bar {
+    #stats-bar {
       font-size: 11px;
       color: var(--dim);
       margin-left: auto;
@@ -80,113 +93,226 @@
       gap: 14px;
       flex-wrap: wrap;
       justify-content: flex-end;
-  }
+    }
 
-  #stats-bar .stat { cursor: pointer; }
-  #stats-bar .stat:hover { color: var(--text); }
-  #stats-bar .stat .n { color: var(--bright); font-weight: 500; }
+    #stats-bar .stat {
+      cursor: pointer;
+      border-radius: 2px;
+    }
 
-  /* ── Nav ────────────────────────────────────────────────── */
-  nav {
+    #stats-bar .stat:hover { color: var(--text); }
+    #stats-bar .stat .n { color: var(--bright); font-weight: 600; }
+
+    nav {
       display: flex;
       gap: 0;
       border-bottom: 1px solid var(--border);
       overflow-x: auto;
       scrollbar-width: none;
-  }
-  nav::-webkit-scrollbar { display: none; }
+    }
 
-  .nav-btn {
+    nav::-webkit-scrollbar { display: none; }
+
+    .nav-btn {
       background: none;
       border: none;
       border-bottom: 2px solid transparent;
       color: var(--dim);
-      font-family: var(--font);
       font-size: 11px;
       padding: 10px 16px;
       cursor: pointer;
       white-space: nowrap;
       transition: color 0.1s, border-color 0.1s;
       margin-bottom: -1px;
-  }
-  .nav-btn:hover { color: var(--text); }
-  .nav-btn.active {
+    }
+
+    .nav-btn:hover { color: var(--text); }
+
+    .nav-btn.active {
       color: var(--green);
       border-bottom-color: var(--green);
-  }
+    }
 
-  /* ── Main pane ───────────────────────────────────────────── */
-  main {
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0 10px;
+      border-bottom: 1px solid var(--border);
+      min-height: 50px;
+    }
+
+    .view-switch {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .switch-btn {
+      background: none;
+      border: none;
+      color: var(--dim);
+      font-size: 11px;
+      padding: 6px 12px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+    }
+
+    .switch-btn + .switch-btn {
+      border-left: 1px solid var(--border);
+    }
+
+    .switch-btn:hover {
+      color: var(--text);
+      background: var(--surface-2);
+    }
+
+    .switch-btn.active {
+      color: var(--bright);
+      background: var(--muted);
+    }
+
+    .toolbar-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      color: var(--dim);
+      font-size: 11px;
+    }
+
+    .pager {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pager-info {
+      min-width: 112px;
+      text-align: center;
+      color: var(--text);
+    }
+
+    main {
       overflow-y: auto;
       padding: 20px 0 40px;
-  }
+    }
 
-  /* ── Card view ───────────────────────────────────────────── */
-  #card-view { display: none; }
-  #card-view.visible { display: block; }
+    #card-view, #list-view { display: none; }
+    #card-view.visible, #list-view.visible { display: block; }
 
-  .card {
+    .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: var(--radius);
       padding: 24px;
       max-width: 560px;
       margin: 0 auto;
       position: relative;
-  }
+    }
 
-  .card-score {
+    .card-score {
       position: absolute;
-      top: 20px; right: 20px;
+      top: 20px;
+      right: 20px;
       font-size: 18px;
       font-weight: 600;
-  }
+    }
 
-  .card-title {
+    .card-title {
       font-size: 15px;
       font-weight: 500;
       color: var(--bright);
       padding-right: 56px;
       margin-bottom: 4px;
-  }
+    }
 
-  .card-meta {
+    .card-meta {
       font-size: 11px;
       color: var(--dim);
       margin-bottom: 6px;
-  }
+    }
 
-  .tag {
+    .tag {
       display: inline-block;
       font-size: 10px;
       padding: 1px 8px;
       border-radius: 2px;
-      border: 1px solid var(--muted);
-      color: var(--dim);
+      border: 1px solid currentColor;
       margin-bottom: 16px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-  }
+    }
 
-  .card-link {
+    .card-link {
       display: block;
       font-size: 11px;
       color: var(--blue);
-      text-decoration: none;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
       margin-bottom: 20px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-  }
-  .card-link:hover { text-decoration: underline; }
+    }
 
-  .card-actions {
+    .card-link:hover { color: var(--bright); }
+
+    .card-actions {
       display: flex;
       gap: 8px;
-  }
+      flex-wrap: wrap;
+    }
 
-  .btn {
+    .card-shell {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 560px) 48px;
+      align-items: center;
+      gap: 16px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .card-stack {
+      min-width: 0;
+    }
+
+    .card-nav-info {
+      color: var(--dim);
+      font-size: 11px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .card-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid var(--muted);
+      background: transparent;
+      color: var(--bright);
       font-family: var(--font);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
+    }
+
+    .card-arrow:hover:not(:disabled) {
+      background: var(--surface);
+      border-color: var(--text);
+    }
+
+    .card-arrow:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn {
       font-size: 11px;
       padding: 6px 16px;
       border-radius: 2px;
@@ -196,23 +322,20 @@
       cursor: pointer;
       transition: background 0.1s, color 0.1s, border-color 0.1s;
       letter-spacing: 0.04em;
-  }
-  .btn:hover  { background: var(--muted); color: var(--bright); }
-  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .btn-apply  { border-color: var(--green); color: var(--green); }
-  .btn-apply:hover  { background: var(--green); color: var(--bg); }
-  .btn-save   { border-color: var(--blue);  color: var(--blue);  }
-  .btn-save:hover   { background: var(--blue);  color: var(--bg); }
-  .btn-danger { border-color: var(--red);   color: var(--red);   }
-  .btn-danger:hover { background: var(--red); color: var(--bg); }
+    }
 
-  /* ── List view ───────────────────────────────────────────── */
-  #list-view { display: none; }
-  #list-view.visible { display: block; }
+    .btn:hover { background: var(--muted); color: var(--bright); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-apply { border-color: var(--green); color: var(--green); }
+    .btn-apply:hover { background: var(--green); color: var(--bg); }
+    .btn-save { border-color: var(--blue); color: var(--blue); }
+    .btn-save:hover { background: var(--blue); color: var(--bg); }
+    .btn-danger { border-color: var(--red); color: var(--red); }
+    .btn-danger:hover { background: var(--red); color: var(--bg); }
 
-  .list-header {
+    .list-header {
       display: grid;
-      grid-template-columns: 1fr 160px 140px 110px 72px;
+      grid-template-columns: minmax(0, 1fr) 160px 140px 110px 72px;
       gap: 8px;
       padding: 0 8px 6px;
       font-size: 10px;
@@ -220,75 +343,70 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       border-bottom: 1px solid var(--border);
-  }
+    }
 
-  .list-row {
+    .list-row {
       display: grid;
-      grid-template-columns: 1fr 160px 140px 110px 72px;
+      grid-template-columns: minmax(0, 1fr) 160px 140px 110px 72px;
       gap: 8px;
       align-items: center;
       padding: 9px 8px;
       border-bottom: 1px solid var(--border);
       transition: background 0.08s;
-  }
-  .list-row:hover { background: var(--surface); }
+    }
 
-  .list-row .col-title {
+    .list-row:hover { background: var(--surface); }
+
+    .col-title,
+    .col-company,
+    .col-date {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .col-title {
       color: var(--bright);
       font-size: 12px;
-  }
-  .list-row .col-title a {
+    }
+
+    .col-title a {
       color: inherit;
       text-decoration: none;
-  }
-  .list-row .col-title a:hover { text-decoration: underline; color: var(--blue); }
+    }
 
-  .list-row .col-company,
-  .list-row .col-date {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .col-title a:hover {
+      text-decoration: underline;
+      color: var(--blue);
+    }
+
+    .col-company,
+    .col-date {
       color: var(--dim);
       font-size: 11px;
-  }
+    }
 
-  .status-pill {
-      display: inline-block;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 2px;
-      border: 1px solid;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-  }
-
-  .col-actions {
+    .col-actions {
       display: flex;
       gap: 6px;
       justify-content: flex-end;
-  }
+    }
 
-  .icon-btn {
+    .icon-btn {
       background: none;
       border: none;
       color: var(--dim);
-      font-family: var(--font);
       font-size: 12px;
       cursor: pointer;
       padding: 2px 4px;
       border-radius: 2px;
       transition: color 0.1s, background 0.1s;
-  }
-  .icon-btn:hover        { color: var(--bright); background: var(--muted); }
-  .icon-btn.del:hover    { color: var(--red); }
+    }
 
-  /* ── Status select dropdown ──────────────────────────────── */
-  select.status-select {
-      font-family: var(--font);
+    .icon-btn:hover { color: var(--bright); background: var(--muted); }
+    .icon-btn.del:hover { color: var(--red); }
+
+    select.status-select {
       font-size: 10px;
       background: var(--surface);
       color: var(--text);
@@ -297,41 +415,57 @@
       padding: 2px 4px;
       cursor: pointer;
       outline: none;
-  }
-  select.status-select:focus { border-color: var(--blue); }
+      min-width: 98px;
+    }
 
-  /* ── Empty / loading ─────────────────────────────────────── */
-  .empty {
+    select.status-select:hover,
+    select.status-select:focus { border-color: var(--blue); }
+
+    .empty {
       text-align: center;
       color: var(--dim);
       padding: 60px 0;
       font-size: 12px;
-  }
-  .empty .big { font-size: 28px; margin-bottom: 12px; display: block; }
+    }
 
-  /* ── Status colours ──────────────────────────────────────── */
-  .s-ai      { color: var(--green);  border-color: var(--green); }
-  .s-human   { color: var(--yellow); border-color: var(--yellow); }
-  .s-applied { color: var(--blue);   border-color: var(--blue); }
-  .s-saved   { color: var(--purple); border-color: var(--purple); }
-  .s-drop    { color: var(--red);    border-color: var(--red); }
+    .empty .big {
+      font-size: 28px;
+      margin-bottom: 12px;
+      display: block;
+      color: var(--bright);
+    }
 
+    .s-ai { color: var(--green); }
+    .s-human { color: var(--yellow); }
+    .s-applied { color: var(--blue); }
+    .s-saved { color: var(--purple); }
+    .s-drop { color: var(--red); }
 
+    @media (max-width: 720px) {
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .toolbar-meta {
+        justify-content: space-between;
+      }
+
+      .list-header,
+      .list-row {
+        grid-template-columns: minmax(0, 1fr) 110px 120px 96px 48px;
+      }
+    }
   </style>
-
 </head>
 <body>
 <div class="shell">
-
-  <!-- Header -->
   <header>
     <div class="logo"><span>▸</span> JobRadar</div>
     <div id="stats-bar">loading stats…</div>
   </header>
 
-  <!-- Nav -->
-  <nav id="nav">
-    <button class="nav-btn active" data-view="review">review</button>
+  <nav id="nav" aria-label="Job views">
     <button class="nav-btn" data-view="high_matched">high match</button>
     <button class="nav-btn" data-view="mid_matched">mid match</button>
     <button class="nav-btn" data-view="Applied">applied</button>
@@ -339,15 +473,22 @@
     <button class="nav-btn" data-view="Drop">drop</button>
   </nav>
 
-  <!-- Main -->
-  <main>
+  <div class="toolbar" aria-label="View controls">
+    <div class="view-switch" role="tablist" aria-label="Card or list view">
+      <button id="mode-card-btn" class="switch-btn active" type="button">card</button>
+      <button id="mode-list-btn" class="switch-btn" type="button">list</button>
+    </div>
+    <div class="toolbar-meta">
+      <span id="toolbar-summary">review queue</span>
+      <div id="pager" class="pager"></div>
+    </div>
+  </div>
 
-    <!-- Card review view -->
+  <main>
     <div id="card-view" class="visible">
       <div class="empty"><span class="big">⟳</span>loading…</div>
     </div>
 
-    <!-- List view -->
     <div id="list-view">
       <div class="list-header">
         <span>title</span>
@@ -358,28 +499,58 @@
       </div>
       <div id="list-body"></div>
     </div>
-
   </main>
 </div>
 
 <script>
-  // ── State ────────────────────────────────────────────────────
-  let currentView  = "review";
-  let currentJobId = null;
+  const PAGE_SIZE = 50;
+  const ALL_STATUSES = ["high_matched", "mid_matched", "Applied", "Saved", "Drop"];
+  const TAB_LABELS = {
+    high_matched: "high match",
+    mid_matched: "mid match",
+    Applied: "applied",
+    Saved: "saved",
+    Drop: "drop",
+  };
 
-  // ── Helpers ──────────────────────────────────────────────────
+  let currentTab = "high_matched";
+  const tabMode = {
+    high_matched: "card",
+    mid_matched: "card",
+    Applied: "list",
+    Saved: "list",
+    Drop: "list",
+  };
+  const tabPage = {
+    high_matched: 1,
+    mid_matched: 1,
+    Applied: 1,
+    Saved: 1,
+    Drop: 1,
+  };
+  const cardIndexByTab = {
+    high_matched: 0,
+    mid_matched: 0,
+    Applied: 0,
+    Saved: 0,
+    Drop: 0,
+  };
+  const cache = {};
+
   function esc(s) {
     return String(s ?? "")
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function fmtDate(iso) {
     if (!iso) return "—";
     const d = new Date(iso);
-    const pad = n => String(n).padStart(2,"0");
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} `
-         + `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    if (Number.isNaN(d.getTime())) return "—";
+    const pad = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   function scoreColor(s) {
@@ -389,36 +560,15 @@
   }
 
   function statusClass(status) {
-    const map = {
-      "high_matched":    "s-ai",
-      "mid_matched": "s-human",
-      "Applied":     "s-applied",
-      "Saved":       "s-saved",
-      "Drop":        "s-drop",
-    };
-    return map[status];
+    return {
+      high_matched: "s-ai",
+      mid_matched: "s-human",
+      Applied: "s-applied",
+      Saved: "s-saved",
+      Drop: "s-drop",
+    }[status] || "";
   }
 
-  // ── Stats bar ────────────────────────────────────────────────
-  async function loadStats() {
-    const data  = await apiFetch("/api/stats");
-    const orderMap = {
-      "high_matched": "high match",
-      "mid_matched": "mid match",
-      "Applied": "applied",
-      "Saved": "saved",
-      "Drop": "drop",
-    };
-    const order = ["high_matched","mid_matched","Applied","Saved","Drop"];
-    document.getElementById("stats-bar").innerHTML = order
-    .filter(k => data[k])
-    .map(
-      k => `<span class="stat" onclick="switchView('${k}')">${orderMap[k]}: <span class="n">${data[k]}</span></span>`
-    )
-    .join("");
-  }
-
-  // ── API ──────────────────────────────────────────────────────
   async function apiFetch(url, opts = {}) {
     const r = await fetch(url, opts);
     if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
@@ -437,130 +587,232 @@
     await apiFetch(`/api/jobs/${jobId}`, { method: "DELETE" });
   }
 
-  // ── Nav ──────────────────────────────────────────────────────
-  document.getElementById("nav").addEventListener("click", e => {
-    const btn = e.target.closest(".nav-btn");
-    if (!btn) return;
-    switchView(btn.dataset.view);
-  });
-
-  function switchView(view) {
-    currentView = view;
-
-    // Update active tab (match case-insensitively for status names)
-    document.querySelectorAll(".nav-btn").forEach(b => {
-      b.classList.toggle("active", b.dataset.view === view);
-    });
-
-    const cardEl = document.getElementById("card-view");
-    const listEl = document.getElementById("list-view");
-
-    if (view === "review") {
-      cardEl.classList.add("visible");
-      listEl.classList.remove("visible");
-      loadCard();
-    } else {
-      cardEl.classList.remove("visible");
-      listEl.classList.add("visible");
-      loadList(view === "all" ? null : view);
-    }
+  async function loadStats() {
+    const data = await apiFetch("/api/stats");
+    const order = ["high_matched", "mid_matched", "Applied", "Saved", "Drop"];
+    document.getElementById("stats-bar").innerHTML = order
+      .filter(k => data[k])
+      .map(k => `<span class="stat" onclick="switchTab('${k}')">${TAB_LABELS[k]}: <span class="n">${data[k]}</span></span>`)
+      .join("");
   }
 
-  // ── Card view ────────────────────────────────────────────────
-  async function loadCard() {
-    const el = document.getElementById("card-view");
-    el.innerHTML = `<div class="empty"><span class="big">⟳</span>loading…</div>`;
-    const job = await apiFetch("/api/jobs/next");
-    if (job.done) {
-      el.innerHTML = `<div class="empty"><span class="big">✓</span>all caught up.<br>run the pipeline again tomorrow.</div>`;
+  async function fetchTabData(tab, force = false) {
+    if (!force && cache[tab]) return cache[tab];
+
+    const rows = await apiFetch(`/api/jobs?status=${encodeURIComponent(tab)}&limit=1000`);
+    cache[tab] = rows;
+    return rows;
+  }
+
+  function getPagedRows(rows, page) {
+    const start = (page - 1) * PAGE_SIZE;
+    return rows.slice(start, start + PAGE_SIZE);
+  }
+
+  function renderPager(totalItems, page, mode) {
+    const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+    const pager = document.getElementById("pager");
+
+    if (mode !== "list" || totalItems <= PAGE_SIZE) {
+      pager.innerHTML = totalItems ? `<span class="pager-info">${totalItems} item${totalItems === 1 ? "" : "s"}</span>` : "";
       return;
     }
-    currentJobId = job.id;
+
+    pager.innerHTML = `
+      <button class="btn" type="button" ${page <= 1 ? "disabled" : ""} onclick="changePage(-1)">prev</button>
+      <span class="pager-info">page ${page} / ${totalPages}</span>
+      <button class="btn" type="button" ${page >= totalPages ? "disabled" : ""} onclick="changePage(1)">next</button>
+    `;
+  }
+
+  function updateToolbarMeta(totalItems = 0) {
+    const mode = tabMode[currentTab];
+    const label = TAB_LABELS[currentTab];
+    const summary = document.getElementById("toolbar-summary");
+    summary.textContent = mode === "list"
+      ? `${label} · ${totalItems} total · 50 / page`
+      : `${label} · card view`;
+
+    document.getElementById("mode-card-btn").classList.toggle("active", mode === "card");
+    document.getElementById("mode-list-btn").classList.toggle("active", mode === "list");
+  }
+
+  function buildCard(job, options = {}) {
     const score = (job.match_score ?? 0).toFixed(2);
-    el.innerHTML = `
-      <div class="card">
-        <div class="card-score" style="color:${scoreColor(job.match_score ?? 0)}">${score}</div>
-        <div class="card-title">${esc(job.title)}</div>
-        <div class="card-meta">${esc(job.company)} · ${esc(job.location)}</div>
-        <span class="tag ${statusClass(job.status)}">${esc(job.status)}</span>
-        <a class="card-link" href="${esc(job.post_url)}" target="_blank" rel="noopener">${esc(job.post_url)}</a>
-        <div class="card-actions">
-          <button class="btn btn-apply" onclick="cardAction('Applied')">apply</button>
-          <button class="btn btn-save"  onclick="cardAction('Saved')">save</button>
-          <button class="btn btn-danger"  onclick="cardAction('Drop')">drop</button>
-          <!-- <button class="btn btn-danger" onclick="cardAction('__delete__')">delete</button> -->
+    const navInfoHtml = options.navInfoHtml || "";
+    const leftArrowHtml = options.leftArrowHtml || "";
+    const rightArrowHtml = options.rightArrowHtml || "";
+    const actionHtml = options.actions !== false ? `
+      <div class="card-actions">
+        <button class="btn btn-apply" type="button" onclick="cardAction('${esc(job.id)}','Applied')">apply</button>
+        <button class="btn btn-save" type="button" onclick="cardAction('${esc(job.id)}','Saved')">save</button>
+        <button class="btn btn-danger" type="button" onclick="cardAction('${esc(job.id)}','Drop')">drop</button>
+      </div>` : "";
+
+    return `
+      <div class="card-shell">
+        ${leftArrowHtml}
+        <div class="card-stack">
+          ${navInfoHtml}
+          <div class="card">
+            <div class="card-score" style="color:${scoreColor(job.match_score ?? 0)}">${score}</div>
+            <div class="card-title">${esc(job.title)}</div>
+            <div class="card-meta">${esc(job.company)} · ${esc(job.location || "—")}</div>
+            <span class="tag ${statusClass(job.status)}">${esc(job.status)}</span>
+            <a class="card-link" href="${esc(job.post_url)}" target="_blank" rel="noopener">${esc(job.post_url)}</a>
+            ${actionHtml}
+          </div>
         </div>
+        ${rightArrowHtml}
       </div>`;
   }
 
-  async function cardAction(action) {
-    if (!currentJobId) return;
-    document.querySelectorAll(".card-actions .btn").forEach(b => b.disabled = true);
-    // if (action === "Applied") window.open(document.querySelector(".card-link")?.href, "_blank");
-    if (action === "__delete__") {
-      await deleteJob(currentJobId);
-    } else {
-      await setStatus(currentJobId, action);
-    }
-    await loadStats();
-    await loadCard();
+  function renderEmpty(targetId, symbol, text) {
+    document.getElementById(targetId).innerHTML = `<div class="empty"><span class="big">${symbol}</span>${text}</div>`;
   }
 
-  // ── List view ────────────────────────────────────────────────
-  const ALL_STATUSES = ["high_matched","mid_matched","Applied","Saved","Drop"];
+  async function renderCurrentTab(force = false) {
+    const mode = tabMode[currentTab];
+    const cardEl = document.getElementById("card-view");
+    const listEl = document.getElementById("list-view");
 
-  async function loadList(status) {
-    const url  = status ? `/api/jobs?status=${encodeURIComponent(status)}` : "/api/jobs";
-    const jobs = await apiFetch(url);
-    const body = document.getElementById("list-body");
+    cardEl.classList.toggle("visible", mode === "card");
+    listEl.classList.toggle("visible", mode === "list");
 
-    if (!jobs.length) {
-      body.innerHTML = `<div class="empty" style="padding:40px 0">nothing here yet.</div>`;
+    const rows = await fetchTabData(currentTab, force);
+    updateToolbarMeta(rows.length);
+
+    if (mode === "list") {
+      await renderList(rows);
       return;
     }
 
-    body.innerHTML = jobs.map(j => {
-      const lastActivity = j.last_operated_at ?? j.scraped_at;
-      const opts = ALL_STATUSES.map(s =>
-        `<option value="${s}" ${s === j.status ? "selected" : ""}>${s}</option>`
-      ).join("");
+    await renderCardFromRows(rows);
+  }
 
+  async function renderCardFromRows(rows) {
+    const el = document.getElementById("card-view");
+
+    if (!rows.length) {
+      renderPager(0, 1, "card");
+      renderEmpty("card-view", "·", "nothing here yet.");
+      return;
+    }
+
+    let idx = cardIndexByTab[currentTab] || 0;
+    idx = Math.max(0, Math.min(idx, rows.length - 1));
+    cardIndexByTab[currentTab] = idx;
+    const job = rows[idx];
+
+    const navInfoHtml = `<div class="card-nav-info">${idx + 1} / ${rows.length}</div>`;
+    const leftArrowHtml = `<button class="card-arrow" type="button" aria-label="Previous card" ${idx <= 0 ? "disabled" : ""} onclick="shiftCard(-1)">&lt;</button>`;
+    const rightArrowHtml = `<button class="card-arrow" type="button" aria-label="Next card" ${idx >= rows.length - 1 ? "disabled" : ""} onclick="shiftCard(1)">&gt;</button>`;
+
+    el.innerHTML = buildCard(job, { navInfoHtml, leftArrowHtml, rightArrowHtml, actions: true });
+    renderPager(rows.length, 1, "card");
+  }
+
+  async function renderList(rows) {
+    const body = document.getElementById("list-body");
+
+    if (!rows.length) {
+      body.innerHTML = `<div class="empty" style="padding:40px 0">nothing here yet.</div>`;
+      renderPager(0, 1, "list");
+      return;
+    }
+
+    const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    tabPage[currentTab] = Math.min(Math.max(1, tabPage[currentTab]), totalPages);
+    const page = tabPage[currentTab];
+    const pageRows = getPagedRows(rows, page);
+
+    body.innerHTML = pageRows.map(j => {
+      const lastActivity = j.last_operated_at ?? j.scraped_at;
+      const opts = ALL_STATUSES.map(s => `<option value="${s}" ${s === j.status ? "selected" : ""}>${s}</option>`).join("");
       return `
         <div class="list-row" id="row-${j.id}">
-          <div class="col-title">
-            <a href="${esc(j.post_url)}" target="_blank" rel="noopener">${esc(j.title)}</a>
-          </div>
+          <div class="col-title"><a href="${esc(j.post_url)}" target="_blank" rel="noopener">${esc(j.title)}</a></div>
           <div class="col-company">${esc(j.company)}</div>
           <div class="col-date">${fmtDate(lastActivity)}</div>
           <div>
-            <select class="status-select" onchange="listChangeStatus('${j.id}', this.value)">
+            <select class="status-select" aria-label="Change status" onchange="listChangeStatus('${j.id}', this.value)">
               ${opts}
             </select>
           </div>
           <div class="col-actions">
-            <button class="icon-btn del" title="delete" onclick="listDelete('${j.id}')">✕</button>
+            <button class="icon-btn del" type="button" title="delete" aria-label="Delete job" onclick="listDelete('${j.id}')">✕</button>
           </div>
         </div>`;
     }).join("");
+
+    renderPager(rows.length, page, "list");
+  }
+
+  async function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll(".nav-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.view === tab);
+    });
+    await renderCurrentTab(false);
+  }
+
+  function changeMode(mode) {
+    tabMode[currentTab] = mode;
+    if (mode === "list") tabPage[currentTab] = Math.max(1, tabPage[currentTab]);
+    renderCurrentTab(false);
+  }
+
+  function changePage(delta) {
+    tabPage[currentTab] = Math.max(1, tabPage[currentTab] + delta);
+    renderCurrentTab(false);
+  }
+
+  function shiftCard(delta) {
+    cardIndexByTab[currentTab] = Math.max(0, cardIndexByTab[currentTab] + delta);
+    renderCurrentTab(false);
+  }
+
+  async function cardAction(jobId, action) {
+
+    await setStatus(jobId, action);
+    Object.keys(cache).forEach(k => cache[k] = null);
+    await loadStats();
+    await renderCurrentTab(true);
   }
 
   async function listChangeStatus(jobId, status) {
     await setStatus(jobId, status);
+    Object.keys(cache).forEach(k => cache[k] = null);
     await loadStats();
-    // update the date cell inline without full reload
-    const row = document.getElementById(`row-${jobId}`);
-    if (row) row.querySelector(".col-date").textContent = fmtDate(new Date().toISOString());
+    await renderCurrentTab(true);
   }
 
   async function listDelete(jobId) {
     await deleteJob(jobId);
-    document.getElementById(`row-${jobId}`)?.remove();
+    Object.keys(cache).forEach(k => cache[k] = null);
     await loadStats();
+    await renderCurrentTab(true);
   }
 
-  // ── Boot ─────────────────────────────────────────────────────
-  loadStats();
-  loadCard();
+  document.getElementById("nav").addEventListener("click", e => {
+    const btn = e.target.closest(".nav-btn");
+    if (!btn) return;
+    switchTab(btn.dataset.view);
+  });
+
+  document.getElementById("mode-card-btn").addEventListener("click", () => changeMode("card"));
+  document.getElementById("mode-list-btn").addEventListener("click", () => changeMode("list"));
+
+  (async function boot() {
+    try {
+      await loadStats();
+      await renderCurrentTab(false);
+    } catch (err) {
+      console.error(err);
+      renderEmpty("card-view", "!", "failed to load.");
+      document.getElementById("toolbar-summary").textContent = "load failed";
+    }
+  })();
 </script>
 </body>
 </html>
