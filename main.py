@@ -6,13 +6,16 @@ Usage:
 """
 
 import sys
-import config
+from config import *
 from scraper import fetch_jobs
 from cleaner import clean_jobs
 from experience_filter import filter_by_experience
 from ai_scorer import score_jobs, load_cv
 from db import upsert_jobs, fetch_known_ids
 
+def get_batches(data, batch_size):
+    for i in range(0, len(data), batch_size):
+        yield data[i:i + batch_size]
 
 def run():
     print("=" * 50)
@@ -36,6 +39,10 @@ def run():
         j["status"] = "Drop"
     upsert_jobs(unmatched_jobs)
 
+    if not matched_jobs:
+        print("[main] All jobs filtered out by experience requirement. Exiting.")
+        sys.exit(0)
+
     # Skip jobs already processed in a previous run
     ids = [str(r["id"]) for r in matched_jobs]
     existing_ids = fetch_known_ids(ids)
@@ -49,29 +56,29 @@ def run():
             f"[main] {len(new_jobs)} new jobs to process "
             f"(skipping {len(matched_jobs) - len(new_jobs)} already in DB)"
         )
-        upsert_jobs(new_jobs)
+        
 
     if not new_jobs:
         print("[main] Nothing new. Exiting.")
         sys.exit(0)
 
-    if not matched_jobs:
-        print("[main] All jobs filtered out by experience requirement. Exiting.")
-        sys.exit(0)
-
     # Stage 4 - AI scoring
-    cv = load_cv(config.CV_PATH)
-    scored_jobs = score_jobs(new_jobs, cv)
+    cv = load_cv(CV_PATH)
+    batch_index=1
+    for batch in get_batches(new_jobs,BATCH_SIZE):
+        print("-" * 50)
+        print(f"[main] -- Batch{batch_index} --")
+        upsert_jobs(batch)
+        scored_jobs = score_jobs(batch, cv)
+        upsert_jobs(scored_jobs)
+        # Summary
+        statuses = [j.get("status", "?") for j in scored_jobs]
+        print("\n[main] -- Summary --")
+        for label in ("high_matched", "mid_matched", "Drop"):
+            print(f"  {label}: {statuses.count(label)}")
+        batch_index+=1
 
-    # Stage 5 - Persist scored jobs
-    upsert_jobs(scored_jobs)
-
-    # Summary
-    statuses = [j.get("status", "?") for j in scored_jobs]
-    print("\n[main] -- Summary --")
-    for label in ("high_matched", "mid_matched", "Drop"):
-        print(f"  {label}: {statuses.count(label)}")
-    print(f"  Total scored: {len(scored_jobs)}")
+    print(f"[main] Total scored: {len(new_jobs)}")
 
 
 if __name__ == "__main__":

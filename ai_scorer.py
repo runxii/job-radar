@@ -130,7 +130,7 @@ def score_jobs(
     results: list[dict] = []
 
     for i, job in enumerate(jobs, 1):
-        print(f"[scorer] {i}/{len(jobs)} scoring job {job.get('id')} ...")
+        print(f"[scorer] {i}/{len(jobs)} scoring job {job.get('id')}")
         try:
             scored = score_job(job, cv, client)
             results.append(scored)
