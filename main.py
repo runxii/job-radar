@@ -6,16 +6,18 @@ Usage:
 """
 
 import sys
-from config import *
+from config import CV_PATH, BATCH_SIZE
 from scraper import fetch_jobs
 from cleaner import clean_jobs
 from experience_filter import filter_by_experience
 from ai_scorer import score_jobs, load_cv
 from db import upsert_jobs, fetch_known_ids
 
+
 def get_batches(data, batch_size):
     for i in range(0, len(data), batch_size):
-        yield data[i:i + batch_size]
+        yield data[i : i + batch_size]
+
 
 def run():
     print("=" * 50)
@@ -56,7 +58,6 @@ def run():
             f"[main] {len(new_jobs)} new jobs to process "
             f"(skipping {len(matched_jobs) - len(new_jobs)} already in DB)"
         )
-        
 
     if not new_jobs:
         print("[main] Nothing new. Exiting.")
@@ -64,8 +65,8 @@ def run():
 
     # Stage 4 - AI scoring
     cv = load_cv(CV_PATH)
-    batch_index=1
-    for batch in get_batches(new_jobs,BATCH_SIZE):
+    batch_index = 1
+    for batch in get_batches(new_jobs, BATCH_SIZE):
         print("-" * 50)
         print(f"[main] -- Batch{batch_index} --")
         upsert_jobs(batch)
@@ -76,7 +77,7 @@ def run():
         print("\n[main] -- Summary --")
         for label in ("high_matched", "mid_matched", "Drop"):
             print(f"  {label}: {statuses.count(label)}")
-        batch_index+=1
+        batch_index += 1
 
     print(f"[main] Total scored: {len(new_jobs)}")
 

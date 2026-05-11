@@ -31,9 +31,7 @@ import config
 _client: Client | None = None
 
 # remove physical last_operated_at from select
-LIST_COLS = (
-    "id, title, company, location, match_score, post_url, status, scraped_at, applied_at, drop_at"
-)
+LIST_COLS = "id, title, company, location, match_score, post_url, status, scraped_at, applied_at, drop_at"
 
 TABLE_NAME = "jobs"
 
