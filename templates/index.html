@@ -36,16 +36,12 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--font);
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.65;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       zoom: var(--scale);
-    }
-
-    body {
-      min-height: 100vh;
     }
 
     a, button, select {
@@ -62,7 +58,6 @@
     .shell {
       display: grid;
       grid-template-rows: auto auto auto 1fr;
-      height: 100vh;
       max-width: 900px;
       margin: 0 auto;
       padding: 0 16px;
@@ -199,7 +194,7 @@
 
     main {
       overflow-y: auto;
-      padding: 20px 0 40px;
+      padding: 20px 0;
     }
 
     #card-view, #list-view { display: none; }
@@ -503,7 +498,7 @@
 </div>
 
 <script>
-  const PAGE_SIZE = 50;
+  const PAGE_SIZE = 10;
   const ALL_STATUSES = ["high_matched", "mid_matched", "Applied", "Saved", "Drop"];
   const TAB_LABELS = {
     high_matched: "high match",
@@ -619,9 +614,9 @@
     }
 
     pager.innerHTML = `
-      <button class="btn" type="button" ${page <= 1 ? "disabled" : ""} onclick="changePage(-1)">prev</button>
+      <button class="btn" type="button" ${page <= 1 ? "disabled" : ""} onclick="changePage(-1)"><</button>
       <span class="pager-info">page ${page} / ${totalPages}</span>
-      <button class="btn" type="button" ${page >= totalPages ? "disabled" : ""} onclick="changePage(1)">next</button>
+      <button class="btn" type="button" ${page >= totalPages ? "disabled" : ""} onclick="changePage(1)">></button>
     `;
   }
 
@@ -630,7 +625,7 @@
     const label = TAB_LABELS[currentTab];
     const summary = document.getElementById("toolbar-summary");
     summary.textContent = mode === "list"
-      ? `${label} · ${totalItems} total · 50 / page`
+      ? `${label} · ${totalItems} total · 10 / page`
       : `${label} · card view`;
 
     document.getElementById("mode-card-btn").classList.toggle("active", mode === "card");
