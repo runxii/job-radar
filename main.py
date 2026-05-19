@@ -9,7 +9,7 @@ import sys
 from config import CV_PATH, BATCH_SIZE
 from scraper import fetch_jobs
 from cleaner import clean_jobs
-from experience_filter import filter_by_experience
+from filter import filter_by_experience
 from ai_scorer import score_jobs, load_cv
 from db import upsert_jobs, fetch_known_ids
 

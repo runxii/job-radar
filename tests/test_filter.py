@@ -4,11 +4,12 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
-from experience_filter import (
+from filter import (
     title_implies_senior,
     extract_explicit_years,
     annotate_experience,
     filter_by_experience,
+    company_is_blacklisted,
 )
 
 
@@ -166,3 +167,116 @@ class TestFilterByExperience:
         matched, unmatched = filter_by_experience(jobs, max_years=3)
         assert len(matched) == 0
         assert len(unmatched) == 1
+
+
+class TestBlacklistCompanies:
+    def _job(self, job_id, company, description="No experience required"):
+        return {
+            "id": job_id,
+            "title": "Engineer",
+            "company": company,
+            "description": description,
+        }
+
+    def test_company_is_blacklisted_exact_case_insensitive_match(self, monkeypatch):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company", "Fake Hiring Ltd"},
+            raising=False,
+        )
+
+        job = self._job("1", "bad company")
+
+        assert company_is_blacklisted(job) is True
+
+    def test_company_is_blacklisted_strips_whitespace(self, monkeypatch):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company"},
+            raising=False,
+        )
+
+        job = self._job("1", "  Bad Company  ")
+
+        assert company_is_blacklisted(job) is True
+
+    def test_company_not_blacklisted(self, monkeypatch):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company"},
+            raising=False,
+        )
+
+        job = self._job("1", "Good Company")
+
+        assert company_is_blacklisted(job) is False
+
+    def test_missing_company_not_blacklisted(self, monkeypatch):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company"},
+            raising=False,
+        )
+
+        job = {
+            "id": "1",
+            "title": "Engineer",
+            "description": "No experience required",
+        }
+
+        assert company_is_blacklisted(job) is False
+
+    def test_blacklisted_company_goes_to_unmatched(self, monkeypatch):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company"},
+            raising=False,
+        )
+
+        jobs = [
+            self._job("1", "Good Company", "No experience required"),
+            self._job("2", "Bad Company", "No experience required"),
+        ]
+
+        matched, unmatched = filter_by_experience(jobs, max_years=3)
+
+        matched_ids = {j["id"] for j in matched}
+        unmatched_ids = {j["id"] for j in unmatched}
+
+        assert matched_ids == {"1"}
+        assert unmatched_ids == {"2"}
+
+    def test_blacklisted_company_unmatched_even_when_experience_matches(
+        self, monkeypatch
+    ):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company"},
+            raising=False,
+        )
+
+        jobs = [
+            self._job("1", "Bad Company", "1 year of experience"),
+        ]
+
+        matched, unmatched = filter_by_experience(jobs, max_years=3)
+
+        assert matched == []
+        assert len(unmatched) == 1
+        assert unmatched[0]["id"] == "1"
+
+    def test_blacklist_supports_alternate_company_fields(self, monkeypatch):
+        monkeypatch.setattr(
+            "config.BLACKLIST_COMPANIES",
+            {"Bad Company"},
+            raising=False,
+        )
+
+        job = {
+            "id": "1",
+            "title": "Engineer",
+            "companyName": "Bad Company",
+            "description": "No experience required",
+        }
+
+        assert company_is_blacklisted(job) is True

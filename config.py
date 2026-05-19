@@ -12,11 +12,17 @@ SEARCH_QUERIES = [
     "Full+Stack",
 ]
 SEARCH_LOCATION = "Ireland"
-RESULTS_WANTED = 100  # per keyword; set up to 200 when running for real
-HOURS_OLD = 72  # only jobs posted in last 24h
+RESULTS_WANTED = 20  # per keyword; set up to 200 when running for real
+HOURS_OLD = 24  # only jobs posted in last 24h
 
-# --- Experience Filter ---
+# --- Filter ---
 MAX_YEARS_EXPERIENCE = 3  # drop jobs requiring more than this
+BLACKLIST_COMPANIES = {
+    "DataAnnotation",
+    "Mindrift",
+    "Bending Spoons",
+    "Jobgether",
+}
 
 # --- AI Scorer ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")

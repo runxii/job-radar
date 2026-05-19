@@ -1,10 +1,11 @@
 """
-Stage 3 - Experience Filter
+Stage 3 - Filter
 Ported from the n8n JS node "Work Experience Demand Abstract".
 
 - Detects senior titles (principal / lead / head / director / manager) → marks as 10 yrs
 - Extracts explicit numeric year requirements from description via regex
-- Splits jobs into matched (≤ MAX_YEARS) and unmatched (> MAX_YEARS)
+- Drops suspicious/unreliable company posts into unmatched
+- Splits jobs into matched and unmatched
 """
 
 from __future__ import annotations
@@ -58,6 +59,40 @@ def _normalize(text: str) -> str:
     return text.lower().strip()
 
 
+def _blacklisted_companies() -> set[str]:
+    """
+    Reads custom blacklist company names from config.py.
+
+    Expected config.py:
+        BLACKLIST_COMPANIES = {"company a", "company b"}
+
+    Matching is case-insensitive and exact after stripping whitespace.
+    """
+    companies = getattr(config, "BLACKLIST_COMPANIES", set())
+
+    return {
+        str(company).strip().lower() for company in companies if str(company).strip()
+    }
+
+
+def company_is_blacklisted(job: dict) -> bool:
+    company = (
+        job.get("company")
+        or job.get("company_name")
+        or job.get("companyName")
+        or job.get("employer")
+        or job.get("organization")
+        or ""
+    )
+
+    company = str(company).strip().lower()
+
+    if not company:
+        return False
+
+    return company in _blacklisted_companies()
+
+
 def title_implies_senior(title: str) -> bool:
     return bool(_SENIOR_KEYWORDS.search(title or ""))
 
@@ -104,19 +139,41 @@ def annotate_experience(job: dict) -> dict:
     return job
 
 
-def filter_by_experience(
+def filter(
     jobs: list[dict],
     max_years: int = config.MAX_YEARS_EXPERIENCE,
 ) -> tuple[list[dict], list[dict]]:
     """
     Returns (matched, unmatched).
-    matched   → explicit_years_required <= max_years  (goes forward to AI scoring)
-    unmatched → explicit_years_required >  max_years  (recorded and discarded)
+
+    matched:
+        explicit_years_required <= max_years
+        and company is not in config.BLACKLIST_COMPANIES
+
+    unmatched:
+        explicit_years_required > max_years
+        or company is in config.BLACKLIST_COMPANIES
     """
     annotated = [annotate_experience(j) for j in jobs]
-    matched = [j for j in annotated if j["explicit_years_required"] <= max_years]
-    unmatched = [j for j in annotated if j["explicit_years_required"] > max_years]
+
+    matched = [
+        j
+        for j in annotated
+        if j["explicit_years_required"] <= max_years and not company_is_blacklisted(j)
+    ]
+
+    unmatched = [
+        j
+        for j in annotated
+        if j["explicit_years_required"] > max_years or company_is_blacklisted(j)
+    ]
+
     print(
-        f"[filter] {len(matched)} matched, {len(unmatched)} unmatched (threshold <={max_years} yrs)"
+        f"[filter] {len(matched)} matched, {len(unmatched)} unmatched "
+        f"(threshold <={max_years} yrs, blacklist={len(_blacklisted_companies())})"
     )
+
     return matched, unmatched
+
+
+filter_by_experience = filter
